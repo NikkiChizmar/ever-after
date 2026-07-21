@@ -6,9 +6,14 @@
 /*
  * Ever After design tokens
  * ------------------------
- * Warm, minimal, premium. Stone-based neutrals with a deep forest-green
- * primary, matched to the couple's actual wedding site. No pinks, no gold
- * foil — script type is reserved for the auth screens only (see AuthCard).
+ * Deep forest green, top to bottom — the app's DEFAULT theme is the .dark
+ * block below (see index.html), matched to the couple's actual wedding
+ * site rather than a neutral dark-mode gray. The :root block still exists
+ * as a light theme and stays fully maintained (same components, same
+ * contrast discipline) in case a light/dark toggle is ever wanted — it's
+ * just not what loads by default today.
+ * No pinks, no gold foil — script type is reserved for the auth screens
+ * only (see AuthCard).
  *
  * Colors are defined as CSS variables (shadcn/ui convention) so components
  * reference semantic roles ("primary", "muted") rather than raw values,
@@ -51,33 +56,41 @@
   --ring: oklch(0.28 0.06 145);
 }
 
+/*
+ * Dark theme — currently the app's DEFAULT (see index.html: <html class="dark">),
+ * not an opt-in. Background/card/popover/secondary/muted/accent/border are
+ * all green-tinted (hue 145, matching --primary) rather than neutral charcoal,
+ * so the whole app reads as "deep forest," not "dark mode with green buttons."
+ * Every pairing below was chosen for contrast against that green-black base,
+ * not just carried over from a neutral palette.
+ */
 .dark {
-  --background: oklch(0.21 0.01 60);
-  --foreground: oklch(0.95 0.005 85);
+  --background: oklch(0.19 0.02 145);
+  --foreground: oklch(0.95 0.006 90);
 
-  --card: oklch(0.25 0.01 60);
-  --card-foreground: oklch(0.95 0.005 85);
+  --card: oklch(0.23 0.022 145);
+  --card-foreground: oklch(0.95 0.006 90);
 
-  --popover: oklch(0.25 0.01 60);
-  --popover-foreground: oklch(0.95 0.005 85);
+  --popover: oklch(0.23 0.022 145);
+  --popover-foreground: oklch(0.95 0.006 90);
 
   --primary: oklch(0.74 0.08 145);
-  --primary-foreground: oklch(0.21 0.01 60);
+  --primary-foreground: oklch(0.17 0.02 145);
 
-  --secondary: oklch(0.29 0.01 60);
-  --secondary-foreground: oklch(0.95 0.005 85);
+  --secondary: oklch(0.28 0.024 145);
+  --secondary-foreground: oklch(0.95 0.006 90);
 
-  --muted: oklch(0.29 0.01 60);
-  --muted-foreground: oklch(0.68 0.01 70);
+  --muted: oklch(0.29 0.024 145);
+  --muted-foreground: oklch(0.68 0.015 90);
 
-  --accent: oklch(0.32 0.012 80);
-  --accent-foreground: oklch(0.95 0.005 85);
+  --accent: oklch(0.31 0.026 145);
+  --accent-foreground: oklch(0.95 0.006 90);
 
   --destructive: oklch(0.65 0.16 25);
-  --destructive-foreground: oklch(0.21 0.01 60);
+  --destructive-foreground: oklch(0.98 0.005 90);
 
-  --border: oklch(0.32 0.01 60);
-  --input: oklch(0.32 0.01 60);
+  --border: oklch(0.31 0.022 145);
+  --input: oklch(0.31 0.022 145);
   --ring: oklch(0.74 0.08 145);
 }
 
