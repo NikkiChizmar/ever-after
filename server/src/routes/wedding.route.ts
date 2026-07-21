@@ -10,6 +10,8 @@ import {
 } from '../controllers/wedding.controller.js';
 import { requireAuth } from '../middleware/auth.js';
 import { requireWeddingRole } from '../middleware/wedding-access.js';
+import { budgetRouter } from './budget.route.js';
+import { vendorRouter } from './vendor.route.js';
 
 export const weddingRouter: Router = Router();
 
@@ -24,3 +26,7 @@ weddingRouter.get('/:weddingId', requireWeddingRole('viewer'), getWedding);
 weddingRouter.patch('/:weddingId', requireWeddingRole('editor'), updateWedding);
 weddingRouter.get('/:weddingId/members', requireWeddingRole('viewer'), listMembers);
 weddingRouter.post('/:weddingId/members', requireWeddingRole('owner'), addMember);
+
+// Money domain: each sub-router applies its own per-route role checks.
+weddingRouter.use('/:weddingId', budgetRouter);
+weddingRouter.use('/:weddingId', vendorRouter);
