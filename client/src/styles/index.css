@@ -6,8 +6,9 @@
 /*
  * Ever After design tokens
  * ------------------------
- * Warm, minimal, premium. Stone-based neutrals with a deep olive primary.
- * No pinks, no gold foil, no script fonts — elegance through restraint.
+ * Warm, minimal, premium. Stone-based neutrals with a deep forest-green
+ * primary, matched to the couple's actual wedding site. No pinks, no gold
+ * foil — script type is reserved for the auth screens only (see AuthCard).
  *
  * Colors are defined as CSS variables (shadcn/ui convention) so components
  * reference semantic roles ("primary", "muted") rather than raw values,
@@ -26,7 +27,11 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.24 0.012 60);
 
-  --primary: oklch(0.38 0.045 140);
+  /* Deep forest green, matched to Nikki & Cody's wedding site envelope —
+   * darker and slightly richer than the original olive so brand touchpoints
+   * (buttons, badges, focus rings, nav) read as "their wedding," not just
+   * "a" green. */
+  --primary: oklch(0.28 0.06 145);
   --primary-foreground: oklch(0.98 0.005 90);
 
   --secondary: oklch(0.955 0.006 80);
@@ -43,7 +48,7 @@
 
   --border: oklch(0.91 0.006 80);
   --input: oklch(0.91 0.006 80);
-  --ring: oklch(0.38 0.045 140);
+  --ring: oklch(0.28 0.06 145);
 }
 
 .dark {
@@ -56,7 +61,7 @@
   --popover: oklch(0.25 0.01 60);
   --popover-foreground: oklch(0.95 0.005 85);
 
-  --primary: oklch(0.72 0.06 140);
+  --primary: oklch(0.74 0.08 145);
   --primary-foreground: oklch(0.21 0.01 60);
 
   --secondary: oklch(0.29 0.01 60);
@@ -73,7 +78,7 @@
 
   --border: oklch(0.32 0.01 60);
   --input: oklch(0.32 0.01 60);
-  --ring: oklch(0.72 0.06 140);
+  --ring: oklch(0.74 0.08 145);
 }
 
 @theme inline {
