@@ -9,7 +9,9 @@ services:
       POSTGRES_PASSWORD: ever_after_dev # local dev only — real secrets never live in the repo
       POSTGRES_DB: ever_after
     ports:
-      - '5432:5432'
+      # Host 5433 → container 5432: avoids colliding with any Postgres
+      # already installed on the developer's machine.
+      - '5433:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
