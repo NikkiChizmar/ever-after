@@ -7,6 +7,11 @@ import { env } from '../config/env.js';
 // documented pattern for ESM consumers.
 const { Pool } = pg;
 
+// Return DATE columns (OID 1082) as 'YYYY-MM-DD' strings, not JS Date objects.
+// A wedding date is a calendar date, not an instant — Date objects attach a
+// timezone and invite off-by-one-day bugs across timezones.
+pg.types.setTypeParser(1082, (value: string) => value);
+
 export const pool = new Pool({ connectionString: env.DATABASE_URL });
 
 /**
