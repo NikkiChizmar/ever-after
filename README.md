@@ -95,18 +95,22 @@ Key decisions:
 ## Getting Started
 
 ```bash
-# Requires Node 20.19+
+# Requires Node 20.19+ and Docker Desktop
 npm install
 
 # Environment
 cp server/.env.example server/.env
 cp client/.env.example client/.env
 
+# Database: Postgres 16 in Docker, then apply migrations
+npm run db:up
+npm run migrate
+
 # Run client (5173) + server (3000) together
 npm run dev
 ```
 
-Other commands: `npm run build`, `npm run lint`, `npm run format`.
+Other commands: `npm run build`, `npm run lint`, `npm run format`, `npm run db:down`.
 
 ## Roadmap
 

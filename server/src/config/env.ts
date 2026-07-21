@@ -13,7 +13,8 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
   CLIENT_ORIGIN: z.string().url().default('http://localhost:5173'),
-  // DATABASE_URL joins this schema when PostgreSQL is wired up.
+  DATABASE_URL: z.string().url(),
+  SESSION_TTL_DAYS: z.coerce.number().int().positive().default(30),
 });
 
 const parsed = envSchema.safeParse(process.env);

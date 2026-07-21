@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 
@@ -12,10 +13,18 @@ import { apiRouter } from './routes/index.js';
 export function createApp() {
   const app = express();
 
-  app.use(cors({ origin: env.CLIENT_ORIGIN }));
+  // credentials: true lets the browser send the session cookie cross-origin
+  // (only to the allowlisted client origin).
+  app.use(cors({ origin: env.CLIENT_ORIGIN, credentials: true }));
   app.use(express.json());
+  app.use(cookieParser());
 
   app.use('/api', apiRouter);
+
+  // JSON 404 for unknown API paths — consistent error shape everywhere.
+  app.use((_req, res) => {
+    res.status(404).json({ error: { message: 'Not found' } });
+  });
 
   app.use(errorHandler);
 
