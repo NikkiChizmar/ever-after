@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 
-import { param } from '../lib/params.js';
+import { uuidParam } from '../lib/params.js';
 import * as eventService from '../services/event.service.js';
 
 export async function listEvents(req: Request, res: Response) {
@@ -39,11 +39,11 @@ const updateEventSchema = z.object({
 
 export async function updateEvent(req: Request, res: Response) {
   const input = updateEventSchema.parse(req.body);
-  const event = await eventService.updateEvent(req.membership!.weddingId, param(req, 'eventId'), input);
+  const event = await eventService.updateEvent(req.membership!.weddingId, uuidParam(req, 'eventId'), input);
   res.json({ event });
 }
 
 export async function deleteEvent(req: Request, res: Response) {
-  await eventService.deleteEvent(req.membership!.weddingId, param(req, 'eventId'));
+  await eventService.deleteEvent(req.membership!.weddingId, uuidParam(req, 'eventId'));
   res.status(204).end();
 }

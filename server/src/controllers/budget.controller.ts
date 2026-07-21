@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 
-import { param } from '../lib/params.js';
+import { uuidParam } from '../lib/params.js';
 import * as budgetService from '../services/budget.service.js';
 
 export async function getSummary(req: Request, res: Response) {
@@ -36,13 +36,13 @@ export async function updateCategory(req: Request, res: Response) {
   const input = updateCategorySchema.parse(req.body);
   const category = await budgetService.updateCategory(
     req.membership!.weddingId,
-    param(req, 'categoryId'),
+    uuidParam(req, 'categoryId'),
     input,
   );
   res.json({ category });
 }
 
 export async function deleteCategory(req: Request, res: Response) {
-  await budgetService.deleteCategory(req.membership!.weddingId, param(req, 'categoryId'));
+  await budgetService.deleteCategory(req.membership!.weddingId, uuidParam(req, 'categoryId'));
   res.status(204).end();
 }

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 
-import { param } from '../lib/params.js';
+import { uuidParam } from '../lib/params.js';
 import * as guestService from '../services/guest.service.js';
 
 const ageType = z.enum(['adult', 'child', 'infant']);
@@ -39,7 +39,7 @@ export async function createGuest(req: Request, res: Response) {
 }
 
 export async function getGuest(req: Request, res: Response) {
-  const guest = await guestService.getGuest(req.membership!.weddingId, param(req, 'guestId'));
+  const guest = await guestService.getGuest(req.membership!.weddingId, uuidParam(req, 'guestId'));
   res.json({ guest });
 }
 
@@ -55,23 +55,23 @@ const updateGuestSchema = z.object({
 
 export async function updateGuest(req: Request, res: Response) {
   const input = updateGuestSchema.parse(req.body);
-  const guest = await guestService.updateGuest(req.membership!.weddingId, param(req, 'guestId'), input);
+  const guest = await guestService.updateGuest(req.membership!.weddingId, uuidParam(req, 'guestId'), input);
   res.json({ guest });
 }
 
 export async function deleteGuest(req: Request, res: Response) {
-  await guestService.deleteGuest(req.membership!.weddingId, param(req, 'guestId'));
+  await guestService.deleteGuest(req.membership!.weddingId, uuidParam(req, 'guestId'));
   res.status(204).end();
 }
 
 export async function addDietaryTag(req: Request, res: Response) {
   const { tag } = z.object({ tag: dietaryTag }).parse(req.body);
-  await guestService.addDietaryTag(req.membership!.weddingId, param(req, 'guestId'), tag);
+  await guestService.addDietaryTag(req.membership!.weddingId, uuidParam(req, 'guestId'), tag);
   res.status(204).end();
 }
 
 export async function removeDietaryTag(req: Request, res: Response) {
   const tag = dietaryTag.parse(req.params.tag);
-  await guestService.removeDietaryTag(req.membership!.weddingId, param(req, 'guestId'), tag);
+  await guestService.removeDietaryTag(req.membership!.weddingId, uuidParam(req, 'guestId'), tag);
   res.status(204).end();
 }

@@ -1,18 +1,18 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 
-import { param } from '../lib/params.js';
+import { uuidParam } from '../lib/params.js';
 import * as invitationService from '../services/invitation.service.js';
 
 export async function listRoster(req: Request, res: Response) {
-  const roster = await invitationService.listRosterForEvent(req.membership!.weddingId, param(req, 'eventId'));
+  const roster = await invitationService.listRosterForEvent(req.membership!.weddingId, uuidParam(req, 'eventId'));
   res.json({ roster });
 }
 
 export async function listInvitationsForGuest(req: Request, res: Response) {
   const invitations = await invitationService.listInvitationsForGuest(
     req.membership!.weddingId,
-    param(req, 'guestId'),
+    uuidParam(req, 'guestId'),
   );
   res.json({ invitations });
 }
@@ -23,7 +23,7 @@ export async function inviteGuest(req: Request, res: Response) {
   const { guestId } = inviteGuestSchema.parse(req.body);
   const invitation = await invitationService.inviteGuest(
     req.membership!.weddingId,
-    param(req, 'eventId'),
+    uuidParam(req, 'eventId'),
     guestId,
   );
   res.status(201).json({ invitation });
@@ -35,7 +35,7 @@ export async function inviteParty(req: Request, res: Response) {
   const { partyId } = invitePartySchema.parse(req.body);
   const invitations = await invitationService.inviteParty(
     req.membership!.weddingId,
-    param(req, 'eventId'),
+    uuidParam(req, 'eventId'),
     partyId,
   );
   res.status(201).json({ invitations });
@@ -51,13 +51,13 @@ export async function updateInvitation(req: Request, res: Response) {
   const input = updateInvitationSchema.parse(req.body);
   const invitation = await invitationService.updateInvitation(
     req.membership!.weddingId,
-    param(req, 'invitationId'),
+    uuidParam(req, 'invitationId'),
     input,
   );
   res.json({ invitation });
 }
 
 export async function removeInvitation(req: Request, res: Response) {
-  await invitationService.removeInvitation(req.membership!.weddingId, param(req, 'invitationId'));
+  await invitationService.removeInvitation(req.membership!.weddingId, uuidParam(req, 'invitationId'));
   res.status(204).end();
 }

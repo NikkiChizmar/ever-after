@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 
-import { param } from '../lib/params.js';
+import { uuidParam } from '../lib/params.js';
 import * as partyService from '../services/party.service.js';
 
 const partySide = z.enum(['partner1', 'partner2', 'both']);
@@ -33,11 +33,11 @@ const updatePartySchema = z.object({
 
 export async function updateParty(req: Request, res: Response) {
   const input = updatePartySchema.parse(req.body);
-  const party = await partyService.updateParty(req.membership!.weddingId, param(req, 'partyId'), input);
+  const party = await partyService.updateParty(req.membership!.weddingId, uuidParam(req, 'partyId'), input);
   res.json({ party });
 }
 
 export async function deleteParty(req: Request, res: Response) {
-  await partyService.deleteParty(req.membership!.weddingId, param(req, 'partyId'));
+  await partyService.deleteParty(req.membership!.weddingId, uuidParam(req, 'partyId'));
   res.status(204).end();
 }
