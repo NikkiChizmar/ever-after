@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 
+import { param } from '../lib/params.js';
 import * as vendorService from '../services/vendor.service.js';
 
 const vendorCategory = z.enum([
@@ -34,7 +35,7 @@ export async function createVendor(req: Request, res: Response) {
 }
 
 export async function getVendor(req: Request, res: Response) {
-  const vendor = await vendorService.getVendor(req.membership!.weddingId, req.params.vendorId!);
+  const vendor = await vendorService.getVendor(req.membership!.weddingId, param(req, 'vendorId'));
   res.json({ vendor });
 }
 
@@ -55,13 +56,13 @@ export async function updateVendor(req: Request, res: Response) {
   const input = updateVendorSchema.parse(req.body);
   const vendor = await vendorService.updateVendor(
     req.membership!.weddingId,
-    req.params.vendorId!,
+    param(req, 'vendorId'),
     input,
   );
   res.json({ vendor });
 }
 
 export async function deleteVendor(req: Request, res: Response) {
-  await vendorService.deleteVendor(req.membership!.weddingId, req.params.vendorId!);
+  await vendorService.deleteVendor(req.membership!.weddingId, param(req, 'vendorId'));
   res.status(204).end();
 }

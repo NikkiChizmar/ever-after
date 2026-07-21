@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 
+import { param } from '../lib/params.js';
 import * as paymentService from '../services/payment.service.js';
 
 const paymentMethod = z.enum(['card', 'check', 'transfer', 'cash', 'other']);
@@ -8,7 +9,7 @@ const paymentMethod = z.enum(['card', 'check', 'transfer', 'cash', 'other']);
 export async function listPayments(req: Request, res: Response) {
   const payments = await paymentService.listPaymentsForContract(
     req.membership!.weddingId,
-    req.params.contractId!,
+    param(req, 'contractId'),
   );
   res.json({ payments });
 }
@@ -27,7 +28,7 @@ export async function createPayment(req: Request, res: Response) {
   const input = createPaymentSchema.parse(req.body);
   const payment = await paymentService.createPayment(
     req.membership!.weddingId,
-    req.params.contractId!,
+    param(req, 'contractId'),
     input,
   );
   res.status(201).json({ payment });
@@ -46,13 +47,13 @@ export async function updatePayment(req: Request, res: Response) {
   const input = updatePaymentSchema.parse(req.body);
   const payment = await paymentService.updatePayment(
     req.membership!.weddingId,
-    req.params.paymentId!,
+    param(req, 'paymentId'),
     input,
   );
   res.json({ payment });
 }
 
 export async function deletePayment(req: Request, res: Response) {
-  await paymentService.deletePayment(req.membership!.weddingId, req.params.paymentId!);
+  await paymentService.deletePayment(req.membership!.weddingId, param(req, 'paymentId'));
   res.status(204).end();
 }
