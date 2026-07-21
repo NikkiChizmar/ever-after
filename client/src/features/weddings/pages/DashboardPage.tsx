@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import {
   Card,
@@ -7,16 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { formatMoney } from '@/lib/format';
 import { useWedding } from '../hooks';
-
-function formatMoney(amount: string | null, currency: string): string {
-  if (amount === null) return '—';
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 0,
-  }).format(Number(amount));
-}
 
 function daysUntil(dateString: string | null): number | null {
   if (!dateString) return null;
@@ -28,10 +20,9 @@ function daysUntil(dateString: string | null): number | null {
 }
 
 const upcomingModules = [
-  { title: 'Budget Center', description: 'Planned vs. committed vs. paid, by category.' },
   { title: 'Guests & RSVPs', description: 'Parties, per-event invitations, meals.' },
-  { title: 'Vendors', description: 'From first inquiry to final payment.' },
   { title: 'Tasks', description: 'Everything that must happen, owned by someone.' },
+  { title: 'Documents', description: 'Contracts and invoices, safely stored.' },
 ];
 
 export default function DashboardPage() {
@@ -94,8 +85,19 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <h2 className="font-display mt-14 text-lg font-medium">Coming next</h2>
+      <h2 className="font-display mt-14 text-lg font-medium">Modules</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <Link to={`/w/${wedding.id}/budget`}>
+          <Card className="h-full transition-colors hover:border-primary/40">
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Budget Center</CardTitle>
+              <CardDescription>Planned vs. committed vs. paid, by category.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs uppercase tracking-widest text-primary">Open →</p>
+            </CardContent>
+          </Card>
+        </Link>
         {upcomingModules.map((module) => (
           <Card key={module.title} className="border-dashed">
             <CardHeader>
