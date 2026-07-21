@@ -58,40 +58,40 @@
 
 /*
  * Dark theme — currently the app's DEFAULT (see index.html: <html class="dark">),
- * not an opt-in. Background/card/popover/secondary/muted/accent/border are
- * all green-tinted (hue 145, matching --primary) rather than neutral charcoal,
- * so the whole app reads as "deep forest," not "dark mode with green buttons."
- * Every pairing below was chosen for contrast against that green-black base,
- * not just carried over from a neutral palette.
+ * not an opt-in. Olive, not forest: hue ~108 (yellow-green) rather than ~145
+ * (blue-green), and noticeably lighter than a near-black — per feedback,
+ * the first pass read as too dark/heavy. Background/card/popover/secondary/
+ * muted/accent/border all carry this same hue so the whole app reads as one
+ * warm olive surface, not "dark mode with green buttons."
  */
 .dark {
-  --background: oklch(0.19 0.02 145);
-  --foreground: oklch(0.95 0.006 90);
+  --background: oklch(0.28 0.045 108);
+  --foreground: oklch(0.96 0.012 95);
 
-  --card: oklch(0.23 0.022 145);
-  --card-foreground: oklch(0.95 0.006 90);
+  --card: oklch(0.32 0.045 108);
+  --card-foreground: oklch(0.96 0.012 95);
 
-  --popover: oklch(0.23 0.022 145);
-  --popover-foreground: oklch(0.95 0.006 90);
+  --popover: oklch(0.32 0.045 108);
+  --popover-foreground: oklch(0.96 0.012 95);
 
-  --primary: oklch(0.74 0.08 145);
-  --primary-foreground: oklch(0.17 0.02 145);
+  --primary: oklch(0.7 0.1 108);
+  --primary-foreground: oklch(0.17 0.03 108);
 
-  --secondary: oklch(0.28 0.024 145);
-  --secondary-foreground: oklch(0.95 0.006 90);
+  --secondary: oklch(0.36 0.04 108);
+  --secondary-foreground: oklch(0.96 0.012 95);
 
-  --muted: oklch(0.29 0.024 145);
-  --muted-foreground: oklch(0.68 0.015 90);
+  --muted: oklch(0.37 0.04 108);
+  --muted-foreground: oklch(0.74 0.025 95);
 
-  --accent: oklch(0.31 0.026 145);
-  --accent-foreground: oklch(0.95 0.006 90);
+  --accent: oklch(0.4 0.045 108);
+  --accent-foreground: oklch(0.96 0.012 95);
 
   --destructive: oklch(0.65 0.16 25);
   --destructive-foreground: oklch(0.98 0.005 90);
 
-  --border: oklch(0.31 0.022 145);
-  --input: oklch(0.31 0.022 145);
-  --ring: oklch(0.74 0.08 145);
+  --border: oklch(0.4 0.035 108);
+  --input: oklch(0.4 0.035 108);
+  --ring: oklch(0.7 0.1 108);
 }
 
 @theme inline {
