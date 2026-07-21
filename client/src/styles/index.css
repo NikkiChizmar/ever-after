@@ -104,6 +104,11 @@
 
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  /* Reserved for a single brand moment (the auth screens' wordmark) — never
+   * for operational UI. See docs/data-model.md-adjacent note: the app is a
+   * tool, not an invitation; script stays confined to where emotion, not
+   * data density, is the point. */
+  --font-script: 'Parisienne', cursive;
 }
 
 @layer base {
