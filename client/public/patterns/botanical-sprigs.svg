@@ -1,0 +1,35 @@
+<svg width="260" height="260" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#3f5228" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.3">
+    <!-- sprig 1 -->
+    <g transform="translate(30,30) rotate(10)">
+      <path d="M0 60 C4 40 2 18 -4 0" />
+      <path d="M-2 10 C-10 6 -16 8 -20 14" />
+      <path d="M0 20 C8 16 14 18 18 24" />
+      <path d="M-1 32 C-9 28 -15 30 -19 36" />
+      <path d="M1 44 C9 40 15 42 19 48" />
+    </g>
+
+    <!-- sprig 2, larger, rotated -->
+    <g transform="translate(170,120) rotate(-20)">
+      <path d="M0 70 C6 46 4 20 -6 0" />
+      <path d="M-3 12 C-13 7 -20 10 -25 17" />
+      <path d="M-1 26 C9 21 16 24 21 31" />
+      <path d="M-4 40 C-14 35 -21 38 -26 45" />
+      <path d="M-2 54 C8 49 15 52 20 59" />
+    </g>
+
+    <!-- small single leaf pair -->
+    <g transform="translate(210,20) rotate(15)">
+      <path d="M0 30 C2 18 1 8 -3 0" />
+      <path d="M-2 6 C-8 3 -12 5 -14 9" />
+      <path d="M-1 16 C5 13 9 15 11 19" />
+    </g>
+
+    <!-- small single leaf pair, bottom left -->
+    <g transform="translate(50,190) rotate(-8)">
+      <path d="M0 34 C2 20 1 9 -3 0" />
+      <path d="M-2 7 C-9 4 -13 6 -15 10" />
+      <path d="M-1 18 C5 15 10 17 12 21" />
+    </g>
+  </g>
+</svg>

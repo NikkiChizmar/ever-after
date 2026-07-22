@@ -189,5 +189,8 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image: url('/patterns/wedding-doodles.svg');
+    background-size: 640px 640px;
+    background-repeat: repeat;
   }
 }
