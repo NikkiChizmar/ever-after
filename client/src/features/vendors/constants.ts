@@ -65,3 +65,24 @@ export const VENDOR_STATUS_BADGE_VARIANT: Record<
   booked: 'success',
   declined: 'destructive',
 };
+
+// A pipeline, not a palette: neutral (researching) -> blue (in motion) ->
+// gold (a real quote in hand) -> primary green (booked, the "won" state) ->
+// red breaks the sequence deliberately, since declined isn't a further
+// stage, it's an exit.
+export const VENDOR_STATUS_CHART_COLORS: Record<VendorStatus, string> = {
+  researching: 'var(--color-chart-7)',
+  contacted: 'var(--color-chart-3)',
+  quote_received: 'var(--color-chart-2)',
+  booked: 'var(--color-primary)',
+  declined: 'var(--color-destructive)',
+};
+
+// Left-to-right stacking order for the pipeline chart.
+export const VENDOR_STATUS_ORDER: VendorStatus[] = [
+  'booked',
+  'quote_received',
+  'contacted',
+  'researching',
+  'declined',
+];

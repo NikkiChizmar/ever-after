@@ -1,4 +1,5 @@
-import { PencilIcon, PlusIcon } from 'lucide-react';
+import { ChevronDownIcon, PencilIcon, PlusIcon } from 'lucide-react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -9,11 +10,13 @@ import { VENDOR_CATEGORY_LABELS } from '@/features/vendors/constants';
 import { useVendors } from '@/features/vendors/hooks';
 import { useWedding } from '@/features/weddings/hooks';
 import { formatMoney } from '@/lib/format';
+import { cn } from '@/lib/utils';
 import { AddCategoryDialog } from '../components/AddCategoryDialog';
 import { BookedVendorsChart } from '../components/BookedVendorsChart';
 import { BudgetProgress } from '../components/BudgetProgress';
 import { CategorySpendChart } from '../components/CategorySpendChart';
 import { EditCategoryDialog } from '../components/EditCategoryDialog';
+import { VendorPipelineChart } from '../components/VendorPipelineChart';
 import { useBudgetSummary } from '../hooks';
 
 export default function BudgetCenterPage() {
@@ -21,6 +24,7 @@ export default function BudgetCenterPage() {
   const { data: weddingData } = useWedding(weddingId!);
   const { data: summary, isPending, isError, error } = useBudgetSummary(weddingId!);
   const { data: vendors } = useVendors(weddingId!);
+  const [manageListOpen, setManageListOpen] = useState(false);
 
   if (isPending || !weddingData) {
     return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
@@ -199,24 +203,48 @@ export default function BudgetCenterPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="mt-4 divide-y rounded-xl border bg-card text-card-foreground">
-          {vendors.map((vendor) => {
-            const budgetCategory = summary.categories.find((c) => c.id === vendor.budgetCategoryId);
-            return (
-              <div key={vendor.id} className="flex items-center justify-between gap-4 px-5 py-4">
-                <div>
-                  <p className="text-sm font-medium">{vendor.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {VENDOR_CATEGORY_LABELS[vendor.category]}
-                    {budgetCategory && ` · ${budgetCategory.name}`}
-                    {vendor.estimatedCost && ` · est. ${money(vendor.estimatedCost)}`}
-                  </p>
-                </div>
-                <VendorStatusSelect weddingId={weddingId!} vendorId={vendor.id} status={vendor.status} />
-              </div>
-            );
-          })}
-        </div>
+        <>
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Booked vs. declined</CardTitle>
+              <CardDescription>Every vendor considered, by category and outcome.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <VendorPipelineChart vendors={vendors} />
+            </CardContent>
+          </Card>
+
+          <button
+            type="button"
+            onClick={() => setManageListOpen((open) => !open)}
+            className="mt-4 flex items-center gap-1.5 text-sm font-medium text-foreground/70 hover:text-foreground"
+            aria-expanded={manageListOpen}
+          >
+            <ChevronDownIcon className={cn('size-4 transition-transform', manageListOpen && 'rotate-180')} />
+            {manageListOpen ? 'Hide vendor list' : 'Manage vendor list'}
+          </button>
+
+          {manageListOpen && (
+            <div className="mt-3 divide-y rounded-xl border bg-card text-card-foreground">
+              {vendors.map((vendor) => {
+                const budgetCategory = summary.categories.find((c) => c.id === vendor.budgetCategoryId);
+                return (
+                  <div key={vendor.id} className="flex items-center justify-between gap-4 px-5 py-4">
+                    <div>
+                      <p className="text-sm font-medium">{vendor.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {VENDOR_CATEGORY_LABELS[vendor.category]}
+                        {budgetCategory && ` · ${budgetCategory.name}`}
+                        {vendor.estimatedCost && ` · est. ${money(vendor.estimatedCost)}`}
+                      </p>
+                    </div>
+                    <VendorStatusSelect weddingId={weddingId!} vendorId={vendor.id} status={vendor.status} />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
