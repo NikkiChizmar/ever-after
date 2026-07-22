@@ -63,7 +63,13 @@ export function BookedVendorsChart({ vendors, currency }: BookedVendorsChartProp
               );
             }}
           />
-          <Bar dataKey="cost" radius={[0, 4, 4, 0]} barSize={18}>
+          <Bar
+            dataKey="cost"
+            radius={[0, 4, 4, 0]}
+            barSize={18}
+            stroke="var(--color-card)"
+            strokeWidth={1}
+          >
             {data.map((row) => (
               <Cell key={row.name} fill={row.color} />
             ))}

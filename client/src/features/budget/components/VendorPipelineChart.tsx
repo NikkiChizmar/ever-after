@@ -93,6 +93,8 @@ export function VendorPipelineChart({ vendors }: VendorPipelineChartProps) {
                 dataKey={status}
                 stackId="pipeline"
                 fill={VENDOR_STATUS_CHART_COLORS[status]}
+                stroke="var(--color-card)"
+                strokeWidth={1}
                 radius={
                   status === VENDOR_STATUS_ORDER[VENDOR_STATUS_ORDER.length - 1] ? [0, 4, 4, 0] : undefined
                 }

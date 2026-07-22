@@ -63,7 +63,8 @@ export function CategorySpendChart({ summary, currency }: CategorySpendChartProp
               innerRadius="62%"
               outerRadius="100%"
               paddingAngle={2}
-              stroke="none"
+              stroke="var(--color-card)"
+              strokeWidth={2}
             >
               {slices.map((slice) => (
                 <Cell key={slice.name} fill={slice.color} />

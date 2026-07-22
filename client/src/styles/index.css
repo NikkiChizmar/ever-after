@@ -6,76 +6,83 @@
 /*
  * Ever After design tokens
  * ------------------------
- * Deep forest green, top to bottom — the app's DEFAULT theme is the .dark
- * block below (see index.html), matched to the couple's actual wedding
- * site rather than a neutral dark-mode gray. The :root block still exists
- * as a light theme and stays fully maintained (same components, same
- * contrast discipline) in case a light/dark toggle is ever wanted — it's
- * just not what loads by default today.
+ * Third iteration: a full pastel theme, top to bottom — background, cards,
+ * buttons, and charts all shifted to soft, low-saturation tones. This is a
+ * deliberate departure from the saturated olive matched to the couple's
+ * wedding site (that theme still exists below, in .dark, dormant) — the
+ * :root block below is now the app's DEFAULT (see index.html: no "dark"
+ * class). Kept in the same warm olive/gold/terracotta family as before
+ * rather than jumping to generic wedding pastels (blush pink, lavender,
+ * mint) — pastel doesn't have to mean "same as every other wedding site."
  * No pinks, no gold foil — script type is reserved for the auth screens
  * only (see AuthCard).
  *
  * Colors are defined as CSS variables (shadcn/ui convention) so components
  * reference semantic roles ("primary", "muted") rather than raw values,
- * and dark mode is a variable swap rather than a rewrite.
+ * and a theme swap is a variable swap rather than a rewrite.
  */
 
 :root {
   --radius: 0.5rem;
 
-  --background: oklch(0.985 0.004 85);
-  --foreground: oklch(0.24 0.012 60);
+  /* Pale pastel sage — the page's own color, not a neutral. Cards sit on
+   * top of it in a warmer, lighter ivory (see --card) so the two surfaces
+   * stay distinguishable even though both are now light. */
+  --background: oklch(0.94 0.025 125);
+  --foreground: oklch(0.32 0.025 130);
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.012 60);
+  --card: oklch(0.99 0.006 90);
+  --card-foreground: oklch(0.32 0.025 130);
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.012 60);
+  --popover: oklch(0.99 0.006 90);
+  --popover-foreground: oklch(0.32 0.025 130);
 
-  /* Deep forest green, matched to Nikki & Cody's wedding site envelope —
-   * darker and slightly richer than the original olive so brand touchpoints
-   * (buttons, badges, focus rings, nav) read as "their wedding," not just
-   * "a" green. */
-  --primary: oklch(0.28 0.06 145);
-  --primary-foreground: oklch(0.98 0.005 90);
+  /* Pastel olive — light enough to be "pastel," dark enough that white text
+   * buttons... doesn't work anymore. Pastel primaries need DARK text on
+   * top, so --primary-foreground flips from white to a deep olive here. */
+  --primary: oklch(0.74 0.07 130);
+  --primary-foreground: oklch(0.26 0.03 130);
 
-  --secondary: oklch(0.955 0.006 80);
-  --secondary-foreground: oklch(0.3 0.015 60);
+  --secondary: oklch(0.9 0.035 25);
+  --secondary-foreground: oklch(0.36 0.03 25);
 
-  --muted: oklch(0.955 0.006 80);
-  --muted-foreground: oklch(0.52 0.012 60);
+  --muted: oklch(0.95 0.012 90);
+  --muted-foreground: oklch(0.55 0.02 100);
 
-  --accent: oklch(0.94 0.012 90);
-  --accent-foreground: oklch(0.3 0.015 60);
+  --accent: oklch(0.92 0.04 85);
+  --accent-foreground: oklch(0.38 0.03 85);
 
-  --destructive: oklch(0.55 0.19 25);
-  --destructive-foreground: oklch(0.98 0.005 90);
+  /* Softened coral rather than a harsh alert red — still unmistakably
+   * "destructive," just pastel-adjacent like everything else. */
+  --destructive: oklch(0.64 0.13 25);
+  --destructive-foreground: oklch(0.99 0.005 90);
 
-  --border: oklch(0.91 0.006 80);
-  --input: oklch(0.91 0.006 80);
-  --ring: oklch(0.28 0.06 145);
+  --border: oklch(0.88 0.02 110);
+  --input: oklch(0.88 0.02 110);
+  --ring: oklch(0.74 0.07 130);
 
-  /* Chart palette — seven hues drawn from one warm, autumnal family
-   * (olive, gold, amber, rust, wine, sand, sage) rather than a generic
-   * categorical rainbow. Deliberately has no blue or purple — both read
-   * as "default charting library" and fight the brand's warmth. Reused
-   * cyclically for the handful of categories beyond the seven Nikki
-   * actually has vendors in. */
-  --chart-1: oklch(0.42 0.09 130); /* olive */
-  --chart-2: oklch(0.72 0.1 75); /* gold */
-  --chart-3: oklch(0.64 0.1 50); /* amber */
-  --chart-4: oklch(0.58 0.13 30); /* rust */
-  --chart-5: oklch(0.42 0.11 18); /* wine */
-  --chart-6: oklch(0.82 0.04 90); /* sand */
-  --chart-7: oklch(0.62 0.035 150); /* sage */
+  /* Chart palette — pastel versions of the same seven-hue warm family
+   * (olive, gold, amber, rust, wine, sand, sage). Pastel tones sit closer
+   * together in lightness than saturated ones, so the chart components add
+   * a thin card-colored stroke between segments to keep adjacent slices/
+   * bars from blurring into each other. */
+  --chart-1: oklch(0.72 0.05 130); /* olive */
+  --chart-2: oklch(0.86 0.06 80); /* gold */
+  --chart-3: oklch(0.8 0.07 55); /* amber */
+  --chart-4: oklch(0.76 0.08 35); /* rust */
+  --chart-5: oklch(0.74 0.06 20); /* wine */
+  --chart-6: oklch(0.91 0.025 85); /* sand */
+  --chart-7: oklch(0.83 0.025 145); /* sage */
 }
 
 /*
- * Dark theme — currently the app's DEFAULT (see index.html: <html class="dark">),
- * not an opt-in. Second iteration: matched directly to a reference swatch
- * Nikki provided (~oklch(0.50 0.085 120), sampled via sRGB->OKLCH conversion
- * from an estimated hex) — a proper mid-tone, moderately saturated olive,
- * not a dark neutral with a green tint.
+ * Dark theme — NOT currently loaded (see index.html: no "dark" class as of
+ * the pastel rework). Kept intact rather than deleted: this is the
+ * saturated-olive theme matched directly to a reference swatch Nikki
+ * provided (~oklch(0.50 0.085 120), sampled via sRGB->OKLCH conversion from
+ * an estimated hex) — a proper mid-tone, moderately saturated olive, not a
+ * dark neutral with a green tint. If a light/dark (or "pastel/bold") toggle
+ * is ever wanted, this is the other side of it, still fully maintained.
  *
  * That background is too saturated/mid-bright for body text to sit directly
  * on it at good contrast, so this iteration splits the model: --background

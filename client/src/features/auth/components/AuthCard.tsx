@@ -15,7 +15,7 @@ export function AuthCard({ title, subtitle, children }: { title: string; subtitl
   return (
     <div className="flex min-h-svh flex-col items-center justify-center bg-background px-6">
       <div className="mb-10 text-center">
-        <p className="font-script text-7xl leading-none text-primary">Ever After</p>
+        <p className="font-script text-7xl leading-none text-foreground">Ever After</p>
         <p className="mt-3 text-xs font-medium uppercase tracking-[0.25em] text-foreground/70">
           The Wedding Operations Platform
         </p>
