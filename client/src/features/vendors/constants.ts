@@ -66,16 +66,16 @@ export const VENDOR_STATUS_BADGE_VARIANT: Record<
   declined: 'destructive',
 };
 
-// A pipeline, not a palette: neutral (researching) -> blue (in motion) ->
-// gold (a real quote in hand) -> primary green (booked, the "won" state) ->
-// red breaks the sequence deliberately, since declined isn't a further
-// stage, it's an exit.
+// All five statuses pull from the same pastel-rainbow chart palette as
+// every other chart, rather than booked/declined breaking out to the
+// brand primary/destructive tokens — keeps this chart visually consistent
+// with the donut and cost bar chart next to it.
 export const VENDOR_STATUS_CHART_COLORS: Record<VendorStatus, string> = {
-  researching: 'var(--color-chart-7)',
-  contacted: 'var(--color-chart-3)',
-  quote_received: 'var(--color-chart-2)',
-  booked: 'var(--color-primary)',
-  declined: 'var(--color-destructive)',
+  booked: 'var(--color-chart-4)', // green
+  quote_received: 'var(--color-chart-2)', // orange
+  contacted: 'var(--color-chart-3)', // yellow
+  researching: 'var(--color-chart-7)', // purple
+  declined: 'var(--color-chart-1)', // pink
 };
 
 // Left-to-right stacking order for the pipeline chart.
