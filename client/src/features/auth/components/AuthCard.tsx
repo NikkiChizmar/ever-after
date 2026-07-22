@@ -20,7 +20,7 @@ export function AuthCard({ title, subtitle, children }: { title: string; subtitl
           The Wedding Operations Platform
         </p>
       </div>
-      <div className="w-full max-w-sm rounded-xl border bg-card p-8 shadow-sm">
+      <div className="w-full max-w-sm rounded-xl border bg-card p-8 text-card-foreground shadow-sm">
         <h1 className="font-display text-xl font-medium">{title}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
         <div className="mt-6">{children}</div>

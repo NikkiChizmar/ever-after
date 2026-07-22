@@ -199,7 +199,7 @@ export default function BudgetCenterPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="mt-4 divide-y rounded-xl border bg-card">
+        <div className="mt-4 divide-y rounded-xl border bg-card text-card-foreground">
           {vendors.map((vendor) => {
             const budgetCategory = summary.categories.find((c) => c.id === vendor.budgetCategoryId);
             return (
