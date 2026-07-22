@@ -55,17 +55,19 @@
   --input: oklch(0.91 0.006 80);
   --ring: oklch(0.28 0.06 145);
 
-  /* Chart palette — seven muted, elegant hues built around the brand's
-   * olive so vendor-category charts read as "this app" rather than a
-   * generic rainbow. Reused cyclically for the handful of categories
-   * beyond the seven Nikki actually has vendors in. */
-  --chart-1: oklch(0.42 0.09 130);
-  --chart-2: oklch(0.72 0.1 75);
-  --chart-3: oklch(0.6 0.06 235);
-  --chart-4: oklch(0.65 0.1 40);
-  --chart-5: oklch(0.52 0.07 310);
-  --chart-6: oklch(0.78 0.045 75);
-  --chart-7: oklch(0.62 0.035 150);
+  /* Chart palette — seven hues drawn from one warm, autumnal family
+   * (olive, gold, amber, rust, wine, sand, sage) rather than a generic
+   * categorical rainbow. Deliberately has no blue or purple — both read
+   * as "default charting library" and fight the brand's warmth. Reused
+   * cyclically for the handful of categories beyond the seven Nikki
+   * actually has vendors in. */
+  --chart-1: oklch(0.42 0.09 130); /* olive */
+  --chart-2: oklch(0.72 0.1 75); /* gold */
+  --chart-3: oklch(0.64 0.1 50); /* amber */
+  --chart-4: oklch(0.58 0.13 30); /* rust */
+  --chart-5: oklch(0.42 0.11 18); /* wine */
+  --chart-6: oklch(0.82 0.04 90); /* sand */
+  --chart-7: oklch(0.62 0.035 150); /* sage */
 }
 
 /*
@@ -120,13 +122,13 @@
 
   /* Same seven-hue chart palette as :root, tuned slightly for the ivory
    * card surface this theme actually renders charts on. */
-  --chart-1: oklch(0.4 0.09 130);
-  --chart-2: oklch(0.7 0.11 75);
-  --chart-3: oklch(0.58 0.07 235);
-  --chart-4: oklch(0.62 0.11 40);
-  --chart-5: oklch(0.5 0.08 310);
-  --chart-6: oklch(0.76 0.05 75);
-  --chart-7: oklch(0.6 0.04 150);
+  --chart-1: oklch(0.4 0.09 130); /* olive */
+  --chart-2: oklch(0.7 0.11 75); /* gold */
+  --chart-3: oklch(0.62 0.11 50); /* amber */
+  --chart-4: oklch(0.56 0.14 30); /* rust */
+  --chart-5: oklch(0.4 0.12 18); /* wine */
+  --chart-6: oklch(0.8 0.045 90); /* sand */
+  --chart-7: oklch(0.6 0.04 150); /* sage */
 }
 
 @theme inline {
