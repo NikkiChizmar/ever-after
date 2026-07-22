@@ -21,7 +21,7 @@ export default function BudgetCenterPage() {
   const { data: vendors } = useVendors(weddingId!);
 
   if (isPending || !weddingData) {
-    return <p className="px-6 py-20 text-center text-sm text-muted-foreground">Loading…</p>;
+    return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
   }
   if (isError) {
     return (
@@ -39,11 +39,11 @@ export default function BudgetCenterPage() {
 
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-12">
-      <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+      <p className="text-sm font-medium uppercase tracking-widest text-foreground/70">
         {weddingData.wedding.name}
       </p>
       <h1 className="font-display mt-2 text-4xl font-medium tracking-tight">Budget Center</h1>
-      <p className="mt-2 text-muted-foreground">
+      <p className="mt-2 text-foreground/70">
         Planned, committed, and paid — always in sync, never entered twice.
       </p>
 
@@ -174,7 +174,7 @@ export default function BudgetCenterPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="mt-4 divide-y rounded-xl border">
+        <div className="mt-4 divide-y rounded-xl border bg-card">
           {vendors.map((vendor) => {
             const budgetCategory = summary.categories.find((c) => c.id === vendor.budgetCategoryId);
             return (

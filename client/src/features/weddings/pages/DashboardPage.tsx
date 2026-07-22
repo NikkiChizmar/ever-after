@@ -30,7 +30,7 @@ export default function DashboardPage() {
   const { data, isPending, isError, error } = useWedding(weddingId!);
 
   if (isPending) {
-    return <p className="px-6 py-20 text-center text-sm text-muted-foreground">Loading…</p>;
+    return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
   }
   if (isError) {
     return (
@@ -47,7 +47,7 @@ export default function DashboardPage() {
     <div className="mx-auto w-full max-w-5xl px-6 py-12">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          <p className="text-sm font-medium uppercase tracking-widest text-foreground/70">
             {role === 'owner' ? 'Your wedding' : `Shared with you · ${role}`}
           </p>
           <h1 className="font-display mt-2 text-4xl font-medium tracking-tight">{wedding.name}</h1>
@@ -55,7 +55,7 @@ export default function DashboardPage() {
         {countdown !== null && countdown >= 0 && (
           <p className="text-right">
             <span className="font-display text-3xl font-medium">{countdown}</span>
-            <span className="ml-2 text-sm text-muted-foreground">days to go</span>
+            <span className="ml-2 text-sm text-foreground/70">days to go</span>
           </p>
         )}
       </div>

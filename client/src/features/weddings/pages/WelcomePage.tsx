@@ -33,7 +33,7 @@ export default function WelcomePage() {
   return (
     <div className="mx-auto w-full max-w-lg px-6 py-20">
       <h1 className="font-display text-3xl font-medium tracking-tight">Let's set the scene.</h1>
-      <p className="mt-2 text-muted-foreground">
+      <p className="mt-2 text-foreground/70">
         A name is all we need to begin — everything else can change as plans take shape.
       </p>
 

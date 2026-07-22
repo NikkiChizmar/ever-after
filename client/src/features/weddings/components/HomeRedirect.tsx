@@ -13,7 +13,7 @@ export function HomeRedirect() {
   if (isPending) {
     return (
       <div className="flex min-h-svh items-center justify-center">
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <p className="text-sm text-foreground/70">Loading…</p>
       </div>
     );
   }

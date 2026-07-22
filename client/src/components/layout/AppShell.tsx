@@ -38,7 +38,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             )}
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">{user?.fullName}</span>
+            <span className="text-sm text-foreground/70">{user?.fullName}</span>
             <Button variant="ghost" size="sm" onClick={handleLogout} disabled={logout.isPending}>
               Sign out
             </Button>
@@ -58,7 +58,7 @@ function NavLink({ to, label }: { to: string; label: string }) {
       to={to}
       className={cn(
         'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-        isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
+        isActive ? 'bg-accent text-accent-foreground' : 'text-foreground/70 hover:text-foreground',
       )}
     >
       {label}
