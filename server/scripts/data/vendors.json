@@ -1,0 +1,416 @@
+{
+  "budgetCategories": [
+    { "name": "Venue", "plannedAmount": 0 },
+    { "name": "Photography", "plannedAmount": 0 },
+    { "name": "Videography", "plannedAmount": 0 },
+    { "name": "Florist", "plannedAmount": 0 },
+    { "name": "Music", "plannedAmount": 0 },
+    { "name": "Beauty", "plannedAmount": 0 },
+    { "name": "Rentals", "plannedAmount": 0 }
+  ],
+  "vendors": [
+    {
+      "name": "Seven Springs Mountain Resort",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "booked",
+      "estimatedCost": 21599,
+      "notes": "Champion, PA. Picked! Ceremony $3,000 + reception $3,000, included in a $21,599 venue & food total (tax and tip included). In-house catering, ~$175/pp top-tier package. Cocktail bar included. Tables/chairs provided. Candles allowed. No Friday discount. Toured 8/20/2025 — rated 9/10 by both of us."
+    },
+    {
+      "name": "Carnegie Museum",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "declined",
+      "estimatedCost": 25000,
+      "notes": "Pittsburgh, PA. Runner-up. Toured 8/23/2025. Approx. $25,000 (exact figure unclear). In-house catering, on-site suite, no candles, Friday discount available. Rated 8.5/10 by both of us."
+    },
+    {
+      "name": "Hartwood Acres Mansion",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "declined",
+      "estimatedCost": 4500,
+      "notes": "Pittsburgh, PA. Toured 8/21/2025. Reception $4,500 (ceremony included). Outside catering required — $50 alcohol permit, must supply own bartenders/alcohol. Tables/chairs and on-site suite included. Friday discount ~$3,500. Rated 6/10 (Nikki), 5/10 (Cody)."
+    },
+    {
+      "name": "Hartwood Stables",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "declined",
+      "estimatedCost": 3600,
+      "notes": "Pittsburgh, PA. Toured 8/21/2025. Reception $3,600 (ceremony included). Outside catering — same $50 permit/bartender rules as Hartwood Acres. Rated 6/10 (Nikki), 5/10 (Cody)."
+    },
+    {
+      "name": "National Aviary",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "declined",
+      "estimatedCost": 16674.54,
+      "notes": "Pittsburgh, PA. Toured 8/21/2025. Ceremony $750 + reception $5,950. Total ~$16,674.54 including cake and cookie table. In-house catering, candles allowed. Rated 4/10 by both of us."
+    },
+    {
+      "name": "Springwood",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "declined",
+      "estimatedCost": 18000,
+      "notes": "Pittsburgh, PA. Toured 8/11/2025. Ceremony $3,500, reception ~$188/pp x 65 guests. Roughly $18,000 total. In-house catering under 100 guests, $3,500 facility fee. BYOB with their bartenders. Tables/chairs and on-site suite included. Rated 7/10 (Nikki), 6/10 (Cody)."
+    },
+    {
+      "name": "The Frick Museum",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "declined",
+      "estimatedCost": 3000,
+      "notes": "Pittsburgh, PA. Toured 8/11/2025. Ceremony only, $3,000 (would only host the ceremony here). Outside catering, venue rental only. Tables/chairs included. Rated 8.5/10 (Nikki), 6.5/10 (Cody)."
+    },
+    {
+      "name": "Succop Nature Park",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "declined",
+      "estimatedCost": 11325,
+      "notes": "Butler, PA. Toured 8/10/2025. ~$11,325 total (ceremony + reception, buffet included). BYOB, venue provides nothing else. Tables/chairs and on-site suite included. $1,000 deposit. Candles allowed. Rated 6.5/10 (Nikki), 5/10 (Cody)."
+    },
+    {
+      "name": "The Lake House",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "contacted",
+      "notes": "Finger Lakes, NY. Inquired, no tour scheduled. Ceremony $3,500, reception $25,000. Catering minimum noted as $50,000 (as recorded in original research)."
+    },
+    {
+      "name": "Pittsburgh Botanic Garden",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "contacted",
+      "estimatedCost": 7000,
+      "notes": "Pittsburgh, PA. Inquired. Reception $7,000. In-house catering (choice of 7 vendors), ~$45/pp. Tables/chairs and 3-hour on-site suite included. $750 deposit."
+    },
+    {
+      "name": "Heinz History Center",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "contacted",
+      "notes": "Pittsburgh, PA. Inquired. Ceremony $1,500-3,000; whole-facility rental up to $10,000. Catering minimum $20,000. 3-hour on-site suite. Deposit is 50% of rental amount. Candles allowed."
+    },
+    {
+      "name": "Kimpton Hotel Monaco",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "contacted",
+      "estimatedCost": 3000,
+      "notes": "Pittsburgh, PA. Inquired. Ceremony $3,000; reception tied to a $28,000 F&B minimum."
+    },
+    {
+      "name": "Mansions on Fifth",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "contacted",
+      "notes": "Pittsburgh, PA. Inquired — never got back to us."
+    },
+    {
+      "name": "The Pennsylvanian",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "contacted",
+      "estimatedCost": 9250,
+      "notes": "Pittsburgh, PA. Inquired. Reception $9,250. 50% deposit. Friday discount available."
+    },
+    {
+      "name": "New Hazlett Theater",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "contacted",
+      "notes": "Pittsburgh, PA. Inquired — no further details gathered yet."
+    },
+    {
+      "name": "LeMont",
+      "category": "venue",
+      "budgetCategory": "Venue",
+      "status": "contacted",
+      "notes": "Pittsburgh, PA. Inquired. In-house catering, ~$109/pp. Tables/chairs included. Friday discount available."
+    },
+    {
+      "name": "Samantha Taylor",
+      "category": "photography",
+      "budgetCategory": "Photography",
+      "status": "researching",
+      "estimatedCost": 6050,
+      "notes": "10 hours, 2 photographers, 1-hour engagement session included."
+    },
+    {
+      "name": "Taylor Ollason",
+      "category": "photography",
+      "budgetCategory": "Photography",
+      "status": "researching",
+      "estimatedCost": 5500,
+      "notes": "Avg. $5,500 — website doesn't list what's included. Style comparable to Londynnkate's."
+    },
+    {
+      "name": "Nadine",
+      "category": "photography",
+      "budgetCategory": "Photography",
+      "status": "researching",
+      "estimatedCost": 3500,
+      "notes": "8 hours, 800+ edited photos. Additional hours $300 each."
+    },
+    {
+      "name": "Londynnkate",
+      "category": "photography",
+      "budgetCategory": "Photography",
+      "status": "booked",
+      "estimatedCost": 4000,
+      "notes": "Picked! 8 hours, 2 photographers, complimentary engagement session, extra hour +$500. Want to add an hour and still need to confirm the engagement shoot."
+    },
+    {
+      "name": "Adam Michaels",
+      "category": "photography",
+      "budgetCategory": "Photography",
+      "status": "researching",
+      "estimatedCost": 5750,
+      "notes": "2 photographers, engagement session, 850+ edited photos, unlimited coverage (getting ready through reception). Also offers 'Jade's unlimited package' at $4,750 with similar inclusions."
+    },
+    {
+      "name": "Wild North",
+      "category": "photography",
+      "budgetCategory": "Photography",
+      "status": "contacted",
+      "estimatedCost": 4750,
+      "notes": "10 hours, 2 photographers, complimentary bonus hour. Under consideration."
+    },
+    {
+      "name": "Kate Marodi",
+      "category": "photography",
+      "budgetCategory": "Photography",
+      "status": "declined",
+      "estimatedCost": 3900,
+      "notes": "Runner-up. 6-11 hours, 2 photographers, complimentary engagement session, timeline planning, 600-1400 photos. Range $3,300-$4,500."
+    },
+    {
+      "name": "Kelly Zavolta",
+      "category": "photography",
+      "budgetCategory": "Photography",
+      "status": "contacted",
+      "estimatedCost": 3900,
+      "notes": "Starting at $3,900. Under consideration."
+    },
+    {
+      "name": "Zimmerman Video",
+      "category": "videography",
+      "budgetCategory": "Videography",
+      "status": "researching",
+      "estimatedCost": 5700,
+      "notes": "3-5 min film, social recap reel, full ceremony, full dances/speeches, delivered within 3 months. Noted as expensive."
+    },
+    {
+      "name": "The Blue House Media",
+      "category": "videography",
+      "budgetCategory": "Videography",
+      "status": "researching",
+      "estimatedCost": 3000,
+      "notes": "2 filmmakers, 8 hrs coverage, drone, 5-8 min film, full ceremony + speeches, preview within a week."
+    },
+    {
+      "name": "Logans Light Room",
+      "category": "videography",
+      "budgetCategory": "Videography",
+      "status": "researching",
+      "estimatedCost": 4000,
+      "notes": "Begins at $4,000. No further info listed on website."
+    },
+    {
+      "name": "Flower and Oak",
+      "category": "videography",
+      "budgetCategory": "Videography",
+      "status": "researching",
+      "estimatedCost": 3550,
+      "notes": "Cinematic collection: 1 videographer, 8 hrs, 5-min film — $3,550. Premiere collection: 2 videographers, 10 hrs, 10-min film — $4,950."
+    },
+    {
+      "name": "The Wild Roses Co",
+      "category": "videography",
+      "budgetCategory": "Videography",
+      "status": "researching",
+      "estimatedCost": 3750,
+      "notes": "8 hrs, ceremony + reception coverage. Website is vague on specifics."
+    },
+    {
+      "name": "Wiley Weddings",
+      "category": "videography",
+      "budgetCategory": "Videography",
+      "status": "researching",
+      "notes": "No price listed on website — requires direct inquiry."
+    },
+    {
+      "name": "Valerie Stofko Film",
+      "category": "videography",
+      "budgetCategory": "Videography",
+      "status": "booked",
+      "estimatedCost": 4450,
+      "notes": "10 hrs, 1 videographer, drone, 6-13 min film, 30-sec trailer, all raw footage, full ceremony, 2 edited speeches. $4,450 or $4,650 tier. Really like her work. Opens 2027 books May 1st. Inquired 5/4/2026, confirmed available 5/11/2026.",
+      "contract": {
+        "title": "Videography package",
+        "totalAmount": 4450,
+        "payments": [
+          { "label": "1st payment", "amount": 940.19, "paidDate": "2026-05-21" }
+        ]
+      }
+    },
+    {
+      "name": "Pgh Florist",
+      "category": "florist",
+      "budgetCategory": "Florist",
+      "status": "booked",
+      "estimatedCost": 5660,
+      "notes": "Loved their arrangements. Emailed 5/14/2026 wanting to book. Design meeting scheduled 5/30/2026 to discuss vision.",
+      "contract": {
+        "title": "Florals",
+        "totalAmount": 5660,
+        "payments": [
+          { "label": "Deposit", "amount": 600, "paidDate": "2026-05-18" }
+        ]
+      }
+    },
+    {
+      "name": "Linda Brown",
+      "category": "florist",
+      "budgetCategory": "Florist",
+      "status": "researching",
+      "estimatedCost": 8255,
+      "notes": "Expensive compared to other options considered."
+    },
+    {
+      "name": "Loyalty Entertainment",
+      "category": "music",
+      "budgetCategory": "Music",
+      "status": "researching",
+      "estimatedCost": 2495,
+      "notes": "DJ quote. 7 hrs of service, Legend collection $2,495, ceremony/cocktail package included, 16 uplights. Cold sparks add-on +$500."
+    },
+    {
+      "name": "S2N",
+      "category": "music",
+      "budgetCategory": "Music",
+      "status": "booked",
+      "estimatedCost": 2100,
+      "notes": "DJ, booked. 4 hrs of service, 'The Entertainment Experience' base package $2,100. Add-ons under consideration: cold sparks (2) $500, cold sparks (4) $800, uplighting (20) $500, media DJ booth $500. Phone call 11/12/2025. Next payment due 4/25/2027 (amount TBD) — remember to add cold sparks to the contract if we go with them.",
+      "contract": {
+        "title": "DJ package",
+        "totalAmount": 2100,
+        "payments": [
+          { "label": "Deposit", "amount": 910, "paidDate": "2025-12-26" }
+        ]
+      }
+    },
+    {
+      "name": "Steven Vance",
+      "category": "music",
+      "budgetCategory": "Music",
+      "status": "contacted",
+      "estimatedCost": 1695,
+      "notes": "Under consideration for DJ and/or live music (violin). DJ+violin combo packages $1,695-$1,995 (premium electric violin $1,595-$1,895; traditional acoustic $1,495-$1,795). Live-music-only first-hour pricing: solo violin $295-$375, electric violin $395-$995. Most likely direction is live music specifically rather than DJ."
+    },
+    {
+      "name": "Innocenti Strings",
+      "category": "music",
+      "budgetCategory": "Music",
+      "status": "researching",
+      "notes": "Live music (strings) — no pricing gathered yet."
+    },
+    {
+      "name": "Three Rivers String Quartet",
+      "category": "music",
+      "budgetCategory": "Music",
+      "status": "contacted",
+      "estimatedCost": 1645,
+      "notes": "Live music — ceremony & cocktail hour (2 hrs), $1,645 including travel fees. Like the price and package. Inquired 2/4/2026. Asked for a contract 2/9/2026; 50% deposit required to hold the date."
+    },
+    {
+      "name": "Beauty by Brooke",
+      "category": "beauty",
+      "budgetCategory": "Beauty",
+      "status": "booked",
+      "estimatedCost": 175,
+      "notes": "Makeup, booked. $175 wedding day / $130 trial / $130 per bridal party member. 20-mile roundtrip travel included. Texted 11/3 for a trial. Trial run 12/29 @ 12pm — loved the look; testing a stronger setting spray and a different foundation/airbrush mix for future trials."
+    },
+    {
+      "name": "Dangerously Beautiful by AK",
+      "category": "beauty",
+      "budgetCategory": "Beauty",
+      "status": "quote_received",
+      "estimatedCost": 250,
+      "notes": "Makeup. $250 wedding day / $175 trial / $125 per bridal party member, ~$100 avg travel fee. 9/25/27 was open as of inquiry. Filled out inquiry form 11/3. Trial run 11/28 @ 12pm — loved eyes/base, she offered to waive the travel fee. Would change for the real day: lighter brow shade, less cheek contour, no under-eye shadow, different lip color."
+    },
+    {
+      "name": "Shannon Cole Makeup",
+      "category": "beauty",
+      "budgetCategory": "Beauty",
+      "status": "researching",
+      "notes": "Makeup — no pricing gathered yet."
+    },
+    {
+      "name": "Emma Noelle Beauty",
+      "category": "beauty",
+      "budgetCategory": "Beauty",
+      "status": "researching",
+      "estimatedCost": 175,
+      "notes": "Hair. $175 wedding day / $125 trial (2-hr consult, 3 styles) / $125 per bridal party member. $0.50/mile travel from zip 15090. 2027 bookings weren't open yet as of inquiry."
+    },
+    {
+      "name": "Simply Captivating Pgh Hair",
+      "category": "beauty",
+      "budgetCategory": "Beauty",
+      "status": "booked",
+      "estimatedCost": 1278,
+      "notes": "Hair, booked. $1,278 total, travel fee may apply. Must book stylist Amelia a hotel room by March 2027. Joined waitlist 11/11/25; 2027 books opened Mon 1/19/26 9am EST.",
+      "contract": {
+        "title": "Hair styling package",
+        "totalAmount": 1278,
+        "payments": [
+          { "label": "Non-refundable booking fee", "amount": 150, "paidDate": "2026-01-19" },
+          { "label": "Final balance", "amount": 1128, "dueDate": "2027-09-11" }
+        ]
+      }
+    },
+    {
+      "name": "Tease Salon (Shari)",
+      "category": "beauty",
+      "budgetCategory": "Beauty",
+      "status": "declined",
+      "estimatedCost": 140,
+      "notes": "Hair. $140 wedding day / $90 bridesmaid / $90 mother updo. Wouldn't do a trial without locking in first, so went with Simply Captivating instead."
+    },
+    {
+      "name": "Glam Booth",
+      "category": "rentals",
+      "budgetCategory": "Rentals",
+      "status": "declined",
+      "notes": "Photobooth. Price not listed. Inquired 11/18/2025 — can't make the drive out due to another wedding in Pittsburgh that day."
+    },
+    {
+      "name": "Loyalty Entertainment (Photobooth)",
+      "category": "rentals",
+      "budgetCategory": "Rentals",
+      "status": "researching",
+      "estimatedCost": 995,
+      "notes": "Photobooth quote — same company being considered separately for DJ services (see Music category). Add-ons: unlimited 4x6 prints +$300, unlimited 2x6 prints +$300."
+    },
+    {
+      "name": "Expose Photo Booth Co",
+      "category": "rentals",
+      "budgetCategory": "Rentals",
+      "status": "booked",
+      "estimatedCost": 1000,
+      "notes": "Photobooth, booked. Paid via Venmo.",
+      "contract": {
+        "title": "Photobooth",
+        "totalAmount": 1000,
+        "payments": [
+          { "label": "Deposit", "amount": 100, "method": "transfer", "paidDate": "2026-02-18" }
+        ]
+      }
+    }
+  ]
+}
