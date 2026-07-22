@@ -10,7 +10,9 @@ import { useVendors } from '@/features/vendors/hooks';
 import { useWedding } from '@/features/weddings/hooks';
 import { formatMoney } from '@/lib/format';
 import { AddCategoryDialog } from '../components/AddCategoryDialog';
+import { BookedVendorsChart } from '../components/BookedVendorsChart';
 import { BudgetProgress } from '../components/BudgetProgress';
+import { CategorySpendChart } from '../components/CategorySpendChart';
 import { EditCategoryDialog } from '../components/EditCategoryDialog';
 import { useBudgetSummary } from '../hooks';
 
@@ -151,6 +153,29 @@ export default function BudgetCenterPage() {
               </CardContent>
             </Card>
           )}
+        </div>
+      )}
+
+      {(vendors?.some((v) => v.status === 'booked') || summary.categories.length > 0) && (
+        <div className="mt-14 grid gap-4 sm:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Spend by category</CardTitle>
+              <CardDescription>Committed amounts, from real contracts.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CategorySpendChart summary={summary} currency={currency} />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Booked vendor costs</CardTitle>
+              <CardDescription>What you've locked in, ranked by cost.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BookedVendorsChart vendors={vendors ?? []} currency={currency} />
+            </CardContent>
+          </Card>
         </div>
       )}
 
