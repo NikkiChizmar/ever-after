@@ -71,7 +71,7 @@
    * card-colored stroke between segments to keep them crisp. */
   --chart-1: oklch(0.86 0.08 10); /* pink */
   --chart-2: oklch(0.83 0.09 55); /* orange */
-  --chart-3: oklch(0.87 0.16 97); /* yellow */
+  --chart-3: oklch(0.93 0.1 100); /* yellow */
   --chart-4: oklch(0.85 0.06 145); /* green */
   --chart-5: oklch(0.85 0.05 195); /* teal */
   --chart-6: oklch(0.82 0.05 240); /* blue */
@@ -133,7 +133,7 @@
   /* Same pastel-rainbow chart palette as :root. */
   --chart-1: oklch(0.84 0.09 10); /* pink */
   --chart-2: oklch(0.81 0.1 55); /* orange */
-  --chart-3: oklch(0.85 0.17 97); /* yellow */
+  --chart-3: oklch(0.91 0.11 100); /* yellow */
   --chart-4: oklch(0.83 0.07 145); /* green */
   --chart-5: oklch(0.83 0.06 195); /* teal */
   --chart-6: oklch(0.8 0.06 240); /* blue */
