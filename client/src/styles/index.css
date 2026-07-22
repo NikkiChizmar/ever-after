@@ -61,18 +61,21 @@
   --input: oklch(0.88 0.02 110);
   --ring: oklch(0.74 0.07 130);
 
-  /* Chart palette — pastel versions of the same seven-hue warm family
-   * (olive, gold, amber, rust, wine, sand, sage). Pastel tones sit closer
-   * together in lightness than saturated ones, so the chart components add
-   * a thin card-colored stroke between segments to keep adjacent slices/
-   * bars from blurring into each other. */
-  --chart-1: oklch(0.72 0.05 130); /* olive */
-  --chart-2: oklch(0.86 0.06 80); /* gold */
-  --chart-3: oklch(0.8 0.07 55); /* amber */
-  --chart-4: oklch(0.76 0.08 35); /* rust */
-  --chart-5: oklch(0.74 0.06 20); /* wine */
-  --chart-6: oklch(0.91 0.025 85); /* sand */
-  --chart-7: oklch(0.83 0.025 145); /* sage */
+  /* Chart palette — a classic pastel rainbow (pink, orange, yellow, green,
+   * teal, blue, purple), evenly spaced around the hue wheel for maximum
+   * distinguishability between adjacent slices/bars. A deliberate break
+   * from the warm-only olive/gold/rust family used elsewhere in the UI —
+   * charts are where variety earns its keep, since the whole point is
+   * telling categories apart at a glance. Pastel tones sit closer together
+   * in lightness than saturated ones, so the chart components add a thin
+   * card-colored stroke between segments to keep them crisp. */
+  --chart-1: oklch(0.86 0.08 10); /* pink */
+  --chart-2: oklch(0.83 0.09 55); /* orange */
+  --chart-3: oklch(0.88 0.08 95); /* yellow */
+  --chart-4: oklch(0.85 0.06 145); /* green */
+  --chart-5: oklch(0.85 0.05 195); /* teal */
+  --chart-6: oklch(0.82 0.05 240); /* blue */
+  --chart-7: oklch(0.82 0.06 300); /* purple */
 }
 
 /*
@@ -127,15 +130,14 @@
   --input: oklch(0.85 0.02 100);
   --ring: oklch(0.4 0.095 120);
 
-  /* Same seven-hue chart palette as :root, tuned slightly for the ivory
-   * card surface this theme actually renders charts on. */
-  --chart-1: oklch(0.4 0.09 130); /* olive */
-  --chart-2: oklch(0.7 0.11 75); /* gold */
-  --chart-3: oklch(0.62 0.11 50); /* amber */
-  --chart-4: oklch(0.56 0.14 30); /* rust */
-  --chart-5: oklch(0.4 0.12 18); /* wine */
-  --chart-6: oklch(0.8 0.045 90); /* sand */
-  --chart-7: oklch(0.6 0.04 150); /* sage */
+  /* Same pastel-rainbow chart palette as :root. */
+  --chart-1: oklch(0.84 0.09 10); /* pink */
+  --chart-2: oklch(0.81 0.1 55); /* orange */
+  --chart-3: oklch(0.86 0.09 95); /* yellow */
+  --chart-4: oklch(0.83 0.07 145); /* green */
+  --chart-5: oklch(0.83 0.06 195); /* teal */
+  --chart-6: oklch(0.8 0.06 240); /* blue */
+  --chart-7: oklch(0.8 0.07 300); /* purple */
 }
 
 @theme inline {
