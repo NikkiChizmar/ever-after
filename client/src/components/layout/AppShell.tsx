@@ -3,8 +3,9 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { useCurrentUser, useLogout } from '@/features/auth/hooks';
+import { DEMO_MODE } from '@/lib/demo';
+import { cn } from '@/lib/utils';
 
 /**
  * The authenticated frame: brand, wedding-scoped nav, user identity, sign out.
@@ -37,15 +38,24 @@ export function AppShell({ children }: { children: ReactNode }) {
                   { to: `/w/${weddingId}`, label: 'Dashboard' },
                   { to: `/w/${weddingId}/budget`, label: 'Budget' },
                   { to: `/w/${weddingId}/vendors`, label: 'Vendors' },
+                  { to: `/w/${weddingId}/tasks`, label: 'Awaiting Tasks' },
                 ]}
               />
             )}
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-foreground/70">{user?.fullName}</span>
-            <Button variant="ghost" size="sm" onClick={handleLogout} disabled={logout.isPending}>
-              Sign out
-            </Button>
+            {DEMO_MODE ? (
+              // No real session to sign out of — every visitor is the same
+              // fixed demo account (see server/src/middleware/auth.ts).
+              <span className="text-sm text-foreground/70">Demo viewer</span>
+            ) : (
+              <>
+                <span className="text-sm text-foreground/70">{user?.fullName}</span>
+                <Button variant="ghost" size="sm" onClick={handleLogout} disabled={logout.isPending}>
+                  Sign out
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>

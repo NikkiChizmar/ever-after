@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useWedding } from '@/features/weddings/hooks';
+import { DEMO_MODE } from '@/lib/demo';
 import { formatMoney } from '@/lib/format';
 import { AddCategoryDialog } from '../components/AddCategoryDialog';
 import { BudgetProgress } from '../components/BudgetProgress';
@@ -83,7 +84,7 @@ export default function BudgetCenterPage() {
         <AddCategoryDialog
           weddingId={weddingId!}
           trigger={
-            <Button size="sm" variant="outline">
+            <Button size="sm" variant="outline" disabled={DEMO_MODE} title={DEMO_MODE ? 'Read-only demo' : undefined}>
               <PlusIcon /> Add category
             </Button>
           }
@@ -109,7 +110,13 @@ export default function BudgetCenterPage() {
                   weddingId={weddingId!}
                   category={category}
                   trigger={
-                    <Button size="icon" variant="ghost" className="size-7 -mt-1 -mr-1">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="size-7 -mt-1 -mr-1"
+                      disabled={DEMO_MODE}
+                      title={DEMO_MODE ? 'Read-only demo' : undefined}
+                    >
                       <PencilIcon className="size-3.5" />
                       <span className="sr-only">Edit {category.name}</span>
                     </Button>

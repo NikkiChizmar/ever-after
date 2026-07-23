@@ -2,6 +2,13 @@
 
 **"The Wedding Operations Platform"**
 
+**[Live demo](#) — TODO: add the Vercel URL here once deployed (see `docs/deploying-the-demo.md`)**
+
+> The demo is read-only and runs entirely on fictional sample data (a made-up
+> couple, made-up vendors, made-up everything) — not anything real. It also
+> skips login entirely, since there's nothing real to protect there either.
+> The screen says as much when you open it.
+
 ## Overview
 
 A modern Wedding Operations Platform designed to centralize every aspect of planning a wedding into one beautiful application.
@@ -111,6 +118,8 @@ npm run dev
 ```
 
 Other commands: `npm run build`, `npm run lint`, `npm run format`, `npm run db:down`.
+
+Deploying the public read-only demo (a separate concern from local dev — different database, no real data) is covered in [`docs/deploying-the-demo.md`](docs/deploying-the-demo.md).
 
 ## Roadmap
 

@@ -7,6 +7,7 @@ import { BookedVendorsChart } from '@/features/budget/components/BookedVendorsCh
 import { VendorPipelineChart } from '@/features/budget/components/VendorPipelineChart';
 import { useBudgetSummary } from '@/features/budget/hooks';
 import { useWedding } from '@/features/weddings/hooks';
+import { DEMO_MODE } from '@/lib/demo';
 import { AddVendorDialog } from '../components/AddVendorDialog';
 import { useVendors } from '../hooks';
 
@@ -45,7 +46,7 @@ export default function VendorsPage() {
           weddingId={weddingId!}
           budgetCategories={summary.categories}
           trigger={
-            <Button size="sm" variant="outline">
+            <Button size="sm" variant="outline" disabled={DEMO_MODE} title={DEMO_MODE ? 'Read-only demo' : undefined}>
               <PlusIcon /> Add vendor
             </Button>
           }

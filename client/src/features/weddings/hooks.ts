@@ -19,6 +19,13 @@ export function useWedding(weddingId: string) {
   });
 }
 
+export function useMembers(weddingId: string) {
+  return useQuery({
+    queryKey: ['weddings', weddingId, 'members'],
+    queryFn: async () => (await weddingApi.listMembers(weddingId)).members,
+  });
+}
+
 export function useCreateWedding() {
   const queryClient = useQueryClient();
   return useMutation({
