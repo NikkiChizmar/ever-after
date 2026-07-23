@@ -15,6 +15,7 @@ import { eventRouter } from './event.route.js';
 import { guestRouter } from './guest.route.js';
 import { invitationRouter } from './invitation.route.js';
 import { partyRouter } from './party.route.js';
+import { taskRouter } from './task.route.js';
 import { vendorRouter } from './vendor.route.js';
 
 export const weddingRouter: Router = Router();
@@ -40,3 +41,7 @@ weddingRouter.use('/:weddingId', partyRouter);
 weddingRouter.use('/:weddingId', guestRouter);
 weddingRouter.use('/:weddingId', eventRouter);
 weddingRouter.use('/:weddingId', invitationRouter);
+
+// Tasks — independent of money and guests; references vendors/members
+// optionally, so mounted after both are already registered.
+weddingRouter.use('/:weddingId', taskRouter);
