@@ -19,6 +19,25 @@ export function createApp() {
   app.use(express.json());
   app.use(cookieParser());
 
+  // Belt-and-suspenders read-only enforcement for the public demo: the
+  // seeded demo account's 'viewer' role already blocks every mutation
+  // through the normal role-rank check (see requireWeddingRole), but this
+  // catches routes that check auth only, not role — register/login (moot
+  // anyway, since there's no real login in demo mode) and create-wedding —
+  // so "demo mode = nothing can be written, full stop" doesn't depend on
+  // every route remembering to gate itself correctly.
+  if (env.DEMO_MODE) {
+    app.use((req, res, next) => {
+      if (req.method !== 'GET' && req.method !== 'HEAD') {
+        res.status(403).json({
+          error: { message: 'This is a read-only public demo — nothing here can be changed.' },
+        });
+        return;
+      }
+      next();
+    });
+  }
+
   app.use('/api', apiRouter);
 
   // JSON 404 for unknown API paths — consistent error shape everywhere.
