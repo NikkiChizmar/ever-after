@@ -5,6 +5,7 @@ import { RequireAuth } from '@/features/auth/components/RequireAuth';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import RegisterPage from '@/features/auth/pages/RegisterPage';
 import BudgetCenterPage from '@/features/budget/pages/BudgetCenterPage';
+import VendorsPage from '@/features/vendors/pages/VendorsPage';
 import { HomeRedirect } from '@/features/weddings/components/HomeRedirect';
 import DashboardPage from '@/features/weddings/pages/DashboardPage';
 import WelcomePage from '@/features/weddings/pages/WelcomePage';
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/welcome" element={<WelcomePage />} />
           <Route path="/w/:weddingId" element={<DashboardPage />} />
           <Route path="/w/:weddingId/budget" element={<BudgetCenterPage />} />
+          <Route path="/w/:weddingId/vendors" element={<VendorsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
