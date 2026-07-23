@@ -189,8 +189,47 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-image: url('/patterns/wedding-doodles.svg');
-    background-size: 640px 640px;
-    background-repeat: repeat;
+  }
+}
+
+/*
+ * Background doodle pattern — the supplied illustration asset
+ * (public/patterns/wedding-doodle-hero.{webp,png}), rendered behind the
+ * app by the <Background> component (components/layout/Background.tsx).
+ *
+ * The source PNG has an opaque white page baked in, not a transparent one,
+ * so simply layering it at low opacity would show a pale rectangle rather
+ * than letting the illustration sit "in" the pastel page color. Two things
+ * fix that:
+ *   1. mix-blend-mode: multiply — white areas multiply out to whatever's
+ *      beneath (i.e. become invisible), while the ink lines darken the
+ *      page color under them. This is the standard trick for compositing
+ *      a white-background line-art scan onto a colored surface.
+ *   2. A conservative default opacity on top of that, so the linework
+ *      reads as a quiet paper texture rather than competing with content.
+ *
+ * Tile size steps up at each breakpoint via --doodle-tile so mobile shows
+ * a sparser slice of the artwork (per the "reduce density on small
+ * screens" brief) without the component needing per-breakpoint JS.
+ * --doodle-scale is the <Background scale> prop's hook into that same
+ * calculation.
+ */
+.bg-doodle-pattern {
+  background-image: image-set(
+    url('/patterns/wedding-doodle-hero.webp') type('image/webp'),
+    url('/patterns/wedding-doodle-hero.png') type('image/png')
+  );
+  background-size: calc(420px * var(--doodle-scale, 1)) auto;
+  background-repeat: var(--doodle-repeat, repeat);
+  mix-blend-mode: multiply;
+}
+@media (min-width: 640px) {
+  .bg-doodle-pattern {
+    background-size: calc(560px * var(--doodle-scale, 1)) auto;
+  }
+}
+@media (min-width: 1024px) {
+  .bg-doodle-pattern {
+    background-size: calc(720px * var(--doodle-scale, 1)) auto;
   }
 }
