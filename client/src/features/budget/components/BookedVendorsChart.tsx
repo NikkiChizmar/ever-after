@@ -35,47 +35,57 @@ export function BookedVendorsChart({ vendors, currency }: BookedVendorsChartProp
     );
   }
 
+  const total = data.reduce((sum, row) => sum + row.cost, 0);
+
   return (
-    <div style={{ height: Math.max(data.length * ROW_HEIGHT, 120) }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 24, bottom: 0, left: 0 }}>
-          <XAxis type="number" hide />
-          <YAxis
-            type="category"
-            dataKey="name"
-            width={150}
-            tickLine={false}
-            axisLine={false}
-            tick={{ fill: 'var(--color-muted-foreground)', fontSize: 13 }}
-          />
-          <Tooltip
-            cursor={{ fill: 'var(--color-accent)' }}
-            content={({ active, payload }) => {
-              if (!active || !payload?.length) return null;
-              const row = payload[0]!.payload as (typeof data)[number];
-              return (
-                <div className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm">
-                  <p className="font-medium text-card-foreground">{row.name}</p>
-                  <p className="text-muted-foreground">
-                    {row.category} · {formatMoney(row.cost, currency)}
-                  </p>
-                </div>
-              );
-            }}
-          />
-          <Bar
-            dataKey="cost"
-            radius={[0, 4, 4, 0]}
-            barSize={18}
-            stroke="var(--color-card)"
-            strokeWidth={1}
-          >
-            {data.map((row) => (
-              <Cell key={row.name} fill={row.color} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+    <div>
+      <div style={{ height: Math.max(data.length * ROW_HEIGHT, 120) }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} layout="vertical" margin={{ top: 0, right: 24, bottom: 0, left: 0 }}>
+            <XAxis type="number" hide />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={150}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: 'var(--color-muted-foreground)', fontSize: 13 }}
+            />
+            <Tooltip
+              cursor={{ fill: 'var(--color-accent)' }}
+              content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const row = payload[0]!.payload as (typeof data)[number];
+                return (
+                  <div className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm">
+                    <p className="font-medium text-card-foreground">{row.name}</p>
+                    <p className="text-muted-foreground">
+                      {row.category} · {formatMoney(row.cost, currency)}
+                    </p>
+                  </div>
+                );
+              }}
+            />
+            <Bar
+              dataKey="cost"
+              radius={[0, 4, 4, 0]}
+              barSize={18}
+              stroke="var(--color-card)"
+              strokeWidth={1}
+            >
+              {data.map((row) => (
+                <Cell key={row.name} fill={row.color} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="mt-2 flex items-center justify-between border-t pt-3 text-sm">
+        <span className="font-medium text-card-foreground">Total</span>
+        <span className="font-display text-base font-medium text-card-foreground">
+          {formatMoney(total, currency)}
+        </span>
+      </div>
     </div>
   );
 }
