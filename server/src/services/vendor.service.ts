@@ -147,3 +147,44 @@ export async function deleteVendor(weddingId: string, vendorId: string): Promise
   // money history too. The route confirms this destructively on the client.
   await query('DELETE FROM vendors WHERE id = $1', [vendorId]);
 }
+
+export interface VendorPaymentSummary {
+  vendorId: string;
+  committedAmount: string;
+  paidAmount: string;
+}
+
+/**
+ * Per-vendor money rollup — same two-query shape as getBudgetSummary (one
+ * grouped query over contracts, one over payments), just grouped by vendor
+ * instead of budget category. Only vendors with at least one contract show
+ * up here; a vendor with no contract has nothing to roll up.
+ */
+export async function getVendorPaymentSummary(weddingId: string): Promise<VendorPaymentSummary[]> {
+  const committedRows = await query<{ vendorId: string; committed: string }>(
+    `SELECT c.vendor_id AS "vendorId", COALESCE(SUM(c.total_amount), 0) AS committed
+       FROM contracts c
+       JOIN vendors v ON v.id = c.vendor_id
+      WHERE v.wedding_id = $1
+      GROUP BY c.vendor_id`,
+    [weddingId],
+  );
+
+  const paidRows = await query<{ vendorId: string; paid: string }>(
+    `SELECT c.vendor_id AS "vendorId", COALESCE(SUM(p.amount), 0) AS paid
+       FROM contracts c
+       JOIN vendors v ON v.id = c.vendor_id
+       JOIN payments p ON p.contract_id = c.id AND p.paid_date IS NOT NULL
+      WHERE v.wedding_id = $1
+      GROUP BY c.vendor_id`,
+    [weddingId],
+  );
+
+  const paidByVendor = new Map(paidRows.map((r) => [r.vendorId, r.paid]));
+
+  return committedRows.map((row) => ({
+    vendorId: row.vendorId,
+    committedAmount: row.committed,
+    paidAmount: paidByVendor.get(row.vendorId) ?? '0',
+  }));
+}

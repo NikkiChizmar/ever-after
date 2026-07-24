@@ -5,6 +5,7 @@ import {
   DEMO_ROLE,
   DEMO_TASKS,
   DEMO_USER,
+  DEMO_VENDOR_PAYMENTS,
   DEMO_VENDORS,
   DEMO_WEDDING,
 } from './mockData';
@@ -47,6 +48,9 @@ export function mockApi<T>(path: string, options: RequestOptions = {}): T {
     }
     if (segments[0] === 'weddings' && segments[2] === 'vendors') {
       return { vendors: DEMO_VENDORS } as T;
+    }
+    if (segments[0] === 'weddings' && segments[2] === 'vendor-payment-summary') {
+      return { vendorPayments: DEMO_VENDOR_PAYMENTS } as T;
     }
     if (segments[0] === 'weddings' && segments[2] === 'budget-summary') {
       return DEMO_BUDGET_SUMMARY as T;

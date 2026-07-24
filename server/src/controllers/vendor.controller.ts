@@ -66,3 +66,8 @@ export async function deleteVendor(req: Request, res: Response) {
   await vendorService.deleteVendor(req.membership!.weddingId, uuidParam(req, 'vendorId'));
   res.status(204).end();
 }
+
+export async function getVendorPaymentSummary(req: Request, res: Response) {
+  const vendorPayments = await vendorService.getVendorPaymentSummary(req.membership!.weddingId);
+  res.json({ vendorPayments });
+}

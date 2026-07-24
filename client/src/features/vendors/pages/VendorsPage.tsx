@@ -4,18 +4,20 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookedVendorsChart } from '@/features/budget/components/BookedVendorsChart';
+import { VendorPaymentsChart } from '@/features/budget/components/VendorPaymentsChart';
 import { VendorPipelineChart } from '@/features/budget/components/VendorPipelineChart';
 import { useBudgetSummary } from '@/features/budget/hooks';
 import { useWedding } from '@/features/weddings/hooks';
 import { DEMO_MODE } from '@/lib/demo';
 import { AddVendorDialog } from '../components/AddVendorDialog';
-import { useVendors } from '../hooks';
+import { useVendorPaymentSummary, useVendors } from '../hooks';
 
 export default function VendorsPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
   const { data: weddingData } = useWedding(weddingId!);
   const { data: summary, isPending, isError, error } = useBudgetSummary(weddingId!);
   const { data: vendors } = useVendors(weddingId!);
+  const { data: paymentSummary } = useVendorPaymentSummary(weddingId!);
 
   if (isPending || !weddingData) {
     return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
@@ -77,6 +79,19 @@ export default function VendorsPage() {
             </CardHeader>
             <CardContent>
               <BookedVendorsChart vendors={vendors} currency={currency} />
+            </CardContent>
+          </Card>
+          <Card className="sm:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Payments by vendor</CardTitle>
+              <CardDescription>What's been paid so far vs. what's left on each contract.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <VendorPaymentsChart
+                vendors={vendors}
+                paymentSummary={paymentSummary ?? []}
+                currency={currency}
+              />
             </CardContent>
           </Card>
         </div>

@@ -22,6 +22,12 @@ export interface Vendor {
   createdAt: string;
 }
 
+export interface VendorPaymentSummary {
+  vendorId: string;
+  committedAmount: string;
+  paidAmount: string;
+}
+
 export interface CreateVendorInput {
   name: string;
   category: VendorCategory;
@@ -36,6 +42,8 @@ export interface UpdateVendorInput {
 
 export const vendorApi = {
   list: (weddingId: string) => api<{ vendors: Vendor[] }>(`/weddings/${weddingId}/vendors`),
+  paymentSummary: (weddingId: string) =>
+    api<{ vendorPayments: VendorPaymentSummary[] }>(`/weddings/${weddingId}/vendor-payment-summary`),
   create: (weddingId: string, input: CreateVendorInput) =>
     api<{ vendor: Vendor }>(`/weddings/${weddingId}/vendors`, { method: 'POST', body: input }),
   update: (weddingId: string, vendorId: string, input: UpdateVendorInput) =>

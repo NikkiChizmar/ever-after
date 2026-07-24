@@ -16,12 +16,18 @@ import {
   createVendor,
   deleteVendor,
   getVendor,
+  getVendorPaymentSummary,
   listVendors,
   updateVendor,
 } from '../controllers/vendor.controller.js';
 import { requireWeddingRole } from '../middleware/wedding-access.js';
 
 export const vendorRouter: Router = Router({ mergeParams: true });
+
+// Bulk rollup — how much has been paid toward each vendor vs. what's left.
+// Registered before /vendors/:vendorId isn't required (different path), but
+// kept up top to mirror budget-summary's placement in budget.route.ts.
+vendorRouter.get('/vendor-payment-summary', requireWeddingRole('viewer'), getVendorPaymentSummary);
 
 vendorRouter.get('/vendors', requireWeddingRole('viewer'), listVendors);
 vendorRouter.post('/vendors', requireWeddingRole('editor'), createVendor);

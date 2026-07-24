@@ -1,7 +1,7 @@
 import type { AuthUser } from '@/features/auth/api';
 import type { BudgetSummary } from '@/features/budget/api';
 import type { Task } from '@/features/tasks/api';
-import type { Vendor } from '@/features/vendors/api';
+import type { Vendor, VendorPaymentSummary } from '@/features/vendors/api';
 import type { Member, Wedding, WeddingRole } from '@/features/weddings/api';
 
 /**
@@ -326,6 +326,18 @@ export const DEMO_BUDGET_SUMMARY: BudgetSummary = {
   uncategorized: { committedAmount: '0', paidAmount: '0' },
   totals: { plannedAmount: '37500', committedAmount: '29000', paidAmount: '7225' },
 };
+
+// One row per booked vendor with a contract on file — the exact same five
+// committed/paid pairs baked into DEMO_BUDGET_SUMMARY.categories above,
+// just keyed by vendor instead of category (each of these categories has
+// only one booked vendor in this demo, so the numbers line up 1:1).
+export const DEMO_VENDOR_PAYMENTS: VendorPaymentSummary[] = [
+  { vendorId: 'vendor-willowmere', committedAmount: '14200', paidAmount: '3550' },
+  { vendorId: 'vendor-saffron', committedAmount: '7600', paidAmount: '1900' },
+  { vendorId: 'vendor-amber-oak', committedAmount: '4300', paidAmount: '1075' },
+  { vendorId: 'vendor-ivy-bramble', committedAmount: '2050', paidAmount: '500' },
+  { vendorId: 'vendor-bloom-brush', committedAmount: '850', paidAmount: '200' },
+];
 
 export const DEMO_TASKS: Task[] = [
   {

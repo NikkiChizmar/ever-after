@@ -14,6 +14,15 @@ export function useVendors(weddingId: string) {
   });
 }
 
+const paymentSummaryKey = (weddingId: string) => ['weddings', weddingId, 'vendor-payment-summary'];
+
+export function useVendorPaymentSummary(weddingId: string) {
+  return useQuery({
+    queryKey: paymentSummaryKey(weddingId),
+    queryFn: async () => (await vendorApi.paymentSummary(weddingId)).vendorPayments,
+  });
+}
+
 export function useCreateVendor(weddingId: string) {
   const queryClient = useQueryClient();
   return useMutation({
