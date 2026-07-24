@@ -45,8 +45,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="flex items-center gap-4">
             {DEMO_MODE ? (
-              // No real session to sign out of — every visitor is the same
-              // fixed demo account (see server/src/middleware/auth.ts).
+              // No real session to sign out of — there's no backend at all
+              // in the demo build (see lib/mockApi.ts).
               <span className="text-sm text-foreground/70">Demo viewer</span>
             ) : (
               <>

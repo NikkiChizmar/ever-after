@@ -25,9 +25,8 @@ export default function App() {
 
       <Routes>
         {/* Public — except in the demo build, where there's no real login
-         * at all (every visitor is silently the same fixed viewer account;
-         * see server/src/middleware/auth.ts), so these routes would just
-         * be confusing dead ends rather than a way in. */}
+         * at all (no backend, no session — see lib/mockApi.ts), so these
+         * routes would just be confusing dead ends rather than a way in. */}
         <Route path="/login" element={DEMO_MODE ? <Navigate to="/" replace /> : <LoginPage />} />
         <Route path="/register" element={DEMO_MODE ? <Navigate to="/" replace /> : <RegisterPage />} />
 

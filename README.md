@@ -119,7 +119,7 @@ npm run dev
 
 Other commands: `npm run build`, `npm run lint`, `npm run format`, `npm run db:down`.
 
-Deploying the public read-only demo (a separate concern from local dev — different database, no real data) is covered in [`docs/deploying-the-demo.md`](docs/deploying-the-demo.md).
+Deploying the public read-only demo (a fully static build with no backend or database, running on fictional sample data — see `client/src/lib/mockData.ts`) is covered in [`docs/deploying-the-demo.md`](docs/deploying-the-demo.md).
 
 ## Roadmap
 

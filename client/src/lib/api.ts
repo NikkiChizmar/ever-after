@@ -1,4 +1,6 @@
 import { env } from '@/config/env';
+import { DEMO_MODE } from './demo';
+import { mockApi } from './mockApi';
 
 /**
  * The one place the client talks HTTP. Every feature's api.ts goes through
@@ -21,6 +23,14 @@ interface RequestOptions {
 }
 
 export async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  // The public demo build has no backend at all — see lib/mockApi.ts and
+  // docs/deploying-the-demo.md for why (it's a static site, not a second
+  // deployment to run and pay for). Every other build (including local
+  // dev) never takes this branch, since DEMO_MODE is false there.
+  if (DEMO_MODE) {
+    return mockApi<T>(path, options);
+  }
+
   const response = await fetch(`${env.apiUrl}/api${path}`, {
     method: options.method ?? 'GET',
     // Send the session cookie. In dev the Vite proxy makes this same-origin.
