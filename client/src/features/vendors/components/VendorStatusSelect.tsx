@@ -1,6 +1,5 @@
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
-import { DEMO_MODE } from '@/lib/demo';
 import { useUpdateVendor } from '../hooks';
 import { VENDOR_STATUS_BADGE_VARIANT, VENDOR_STATUS_LABELS } from '../constants';
 import type { VendorStatus } from '../api';
@@ -19,7 +18,6 @@ export function VendorStatusSelect({ weddingId, vendorId, status }: { weddingId:
     <Select
       value={status}
       onValueChange={(next) => updateVendor.mutate({ vendorId, input: { status: next as VendorStatus } })}
-      disabled={DEMO_MODE}
     >
       <SelectTrigger className="h-auto w-auto border-none bg-transparent p-0 shadow-none focus:ring-0 [&>svg]:hidden">
         <Badge variant={VENDOR_STATUS_BADGE_VARIANT[status]}>{VENDOR_STATUS_LABELS[status]}</Badge>
