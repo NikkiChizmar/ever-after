@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useMembers } from '@/features/weddings/hooks';
 import type { Vendor } from '@/features/vendors/api';
+import { TASK_CATEGORIES } from '../constants';
 import { useCreateTask } from '../hooks';
 
 export function AddTaskDialog({
@@ -32,6 +33,7 @@ export function AddTaskDialog({
   const [assigneeMemberId, setAssigneeMemberId] = useState('unassigned');
   const [assigneeLabel, setAssigneeLabel] = useState('');
   const [vendorId, setVendorId] = useState('none');
+  const [category, setCategory] = useState('none');
   const { data: members } = useMembers(weddingId);
   const createTask = useCreateTask(weddingId);
 
@@ -41,6 +43,7 @@ export function AddTaskDialog({
     setAssigneeMemberId('unassigned');
     setAssigneeLabel('');
     setVendorId('none');
+    setCategory('none');
   }
 
   function handleSubmit(event: FormEvent) {
@@ -54,6 +57,7 @@ export function AddTaskDialog({
         // mutually exclusive (see docs/data-model.md §2.14).
         assigneeLabel: assigneeMemberId === 'unassigned' && assigneeLabel ? assigneeLabel : undefined,
         vendorId: vendorId === 'none' ? undefined : vendorId,
+        category: category === 'none' ? undefined : category,
       },
       { onSuccess: () => { setOpen(false); reset(); } },
     );
@@ -109,6 +113,22 @@ export function AddTaskDialog({
                 onChange={(e) => setAssigneeLabel(e.target.value)}
               />
             )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="taskCategory">Part of the day (optional)</Label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger id="taskCategory">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No category</SelectItem>
+                {TASK_CATEGORIES.map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           {vendors.length > 0 && (
             <div className="space-y-2">

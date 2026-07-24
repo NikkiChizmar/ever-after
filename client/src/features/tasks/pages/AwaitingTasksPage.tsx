@@ -11,10 +11,18 @@ import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { AddTaskDialog } from '../components/AddTaskDialog';
 import { TaskStatusSelect } from '../components/TaskStatusSelect';
+import { TASK_CATEGORIES } from '../constants';
 import { useDeleteTask, useTasks } from '../hooks';
 import type { Task } from '../api';
 
 const TODAY = new Date().toISOString().slice(0, 10);
+
+// null (no category picked) groups first as "General" — the everyday
+// planning tasks ("Mail invitations") that aren't tied to a specific part
+// of the wedding day — then each day-of category in the order a wedding
+// actually runs.
+const GROUP_ORDER: (string | null)[] = [null, ...TASK_CATEGORIES];
+const groupLabel = (category: string | null) => category ?? 'General';
 
 export default function AwaitingTasksPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
@@ -102,9 +110,18 @@ export default function AwaitingTasksPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="mt-4 divide-y rounded-xl border bg-card text-card-foreground">
-          {awaiting.map(renderTask)}
-        </div>
+        GROUP_ORDER.map((category) => {
+          const group = awaiting.filter((t) => t.category === category);
+          if (group.length === 0) return null;
+          return (
+            <div key={category ?? 'general'} className="mt-6 first:mt-4">
+              <h3 className="text-sm font-medium text-foreground/70">{groupLabel(category)}</h3>
+              <div className="mt-2 divide-y rounded-xl border bg-card text-card-foreground">
+                {group.map(renderTask)}
+              </div>
+            </div>
+          );
+        })
       )}
 
       {completed.length > 0 && (
