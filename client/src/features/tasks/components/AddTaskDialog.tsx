@@ -36,6 +36,10 @@ export function AddTaskDialog({
   const [category, setCategory] = useState('none');
   const { data: members } = useMembers(weddingId);
   const createTask = useCreateTask(weddingId);
+  // Only vendors actually chosen, not everyone still being considered or
+  // declined — "related vendor" means "who's doing this," which only
+  // makes sense once a vendor is actually booked.
+  const bookedVendors = vendors.filter((vendor) => vendor.status === 'booked');
 
   function reset() {
     setTitle('');
@@ -115,7 +119,7 @@ export function AddTaskDialog({
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="taskCategory">Part of the day (optional)</Label>
+            <Label htmlFor="taskCategory">Event (optional)</Label>
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger id="taskCategory">
                 <SelectValue />
@@ -130,7 +134,7 @@ export function AddTaskDialog({
               </SelectContent>
             </Select>
           </div>
-          {vendors.length > 0 && (
+          {bookedVendors.length > 0 && (
             <div className="space-y-2">
               <Label htmlFor="taskVendor">Related vendor (optional)</Label>
               <Select value={vendorId} onValueChange={setVendorId}>
@@ -139,7 +143,7 @@ export function AddTaskDialog({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">None</SelectItem>
-                  {vendors.map((vendor) => (
+                  {bookedVendors.map((vendor) => (
                     <SelectItem key={vendor.id} value={vendor.id}>
                       {vendor.name}
                     </SelectItem>

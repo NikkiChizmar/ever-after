@@ -18,9 +18,9 @@ import type { Task } from '../api';
 const TODAY = new Date().toISOString().slice(0, 10);
 
 // null (no category picked) groups first as "General" — the everyday
-// planning tasks ("Mail invitations") that aren't tied to a specific part
-// of the wedding day — then each day-of category in the order a wedding
-// actually runs.
+// planning tasks ("Mail invitations") that aren't tied to a specific
+// event — then each event in TASK_CATEGORIES' order (pre-wedding events,
+// then the wedding day itself, then a catch-all).
 const GROUP_ORDER: (string | null)[] = [null, ...TASK_CATEGORIES];
 const groupLabel = (category: string | null) => category ?? 'General';
 
