@@ -1,3 +1,5 @@
+import { CheckIcon } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { DEMO_MODE } from '@/lib/demo';
@@ -28,7 +30,10 @@ export function TaskStatusSelect({
       disabled={DEMO_MODE}
     >
       <SelectTrigger className="h-auto w-auto border-none bg-transparent p-0 shadow-none focus:ring-0 [&>svg]:hidden">
-        <Badge variant={TASK_STATUS_BADGE_VARIANT[status]}>{TASK_STATUS_LABELS[status]}</Badge>
+        <Badge variant={TASK_STATUS_BADGE_VARIANT[status]} className="gap-1">
+          {status === 'done' && <CheckIcon className="size-3" />}
+          {TASK_STATUS_LABELS[status]}
+        </Badge>
       </SelectTrigger>
       <SelectContent>
         {TASK_STATUS_ORDER.map((value) => (
