@@ -102,10 +102,7 @@ export default function BudgetCenterPage() {
           {summary.categories.map((category) => (
             <Card key={category.id}>
               <CardHeader className="flex-row items-start justify-between space-y-0">
-                <div>
-                  <CardTitle className="text-base font-medium">{category.name}</CardTitle>
-                  <CardDescription>Planned {money(category.plannedAmount)}</CardDescription>
-                </div>
+                <CardTitle className="text-base font-medium">{category.name}</CardTitle>
                 <EditCategoryDialog
                   weddingId={weddingId!}
                   category={category}
@@ -130,9 +127,11 @@ export default function BudgetCenterPage() {
                   paid={Number(category.paidAmount)}
                   currency={currency}
                 />
-                <div className="mt-3 flex justify-between text-sm text-muted-foreground">
-                  <span>{money(category.committedAmount)} committed</span>
-                  <span>{money(category.paidAmount)} paid</span>
+                <div className="mt-3 flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{money(category.paidAmount)} paid</span>
+                  <span className="font-medium text-card-foreground">
+                    Total {money(category.committedAmount)}
+                  </span>
                 </div>
               </CardContent>
             </Card>
