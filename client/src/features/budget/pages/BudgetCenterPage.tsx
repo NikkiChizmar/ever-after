@@ -34,6 +34,16 @@ export default function BudgetCenterPage() {
   const showUncategorized =
     Number(summary.uncategorized.committedAmount) > 0 || Number(summary.uncategorized.paidAmount) > 0;
 
+  // What Nikki & Cody are personally covering, as opposed to the wedding
+  // budget as a whole — currently just these two categories; say the word
+  // and more can be added here.
+  const OUR_CATEGORIES = ['Videography', 'Live music'];
+  const ourCategories = summary.categories.filter((c) => OUR_CATEGORIES.includes(c.name));
+  const ourRemaining = ourCategories.reduce(
+    (sum, c) => sum + (Number(c.committedAmount) - Number(c.paidAmount)),
+    0,
+  );
+
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-12">
       <p className="text-sm font-medium uppercase tracking-widest text-foreground/70">
@@ -78,6 +88,19 @@ export default function BudgetCenterPage() {
           </CardHeader>
         </Card>
       </div>
+
+      {ourCategories.length > 0 && (
+        <Card className="mt-4 border-primary/30 bg-primary/5">
+          <CardHeader>
+            <CardDescription>
+              What Nikki & Cody are covering ({ourCategories.map((c) => c.name).join(' + ')})
+            </CardDescription>
+            <CardTitle className="font-display text-2xl font-medium">
+              {formatMoney(String(ourRemaining), currency)} left to pay
+            </CardTitle>
+          </CardHeader>
+        </Card>
+      )}
 
       <div className="mt-14 flex items-center justify-between">
         <h2 className="font-display text-lg font-medium">Categories</h2>
