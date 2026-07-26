@@ -112,19 +112,24 @@ export default function AwaitingTasksPage() {
         GROUP_ORDER.map((category) => {
           const group = tasks.filter((t) => t.category === category);
           if (group.length === 0) return null;
-          // Not-done tasks first, completed ones directly underneath in the
-          // same section — a task's category is where it lives, whether
-          // it's still open or already checked off.
-          const ordered = [...group].sort((a, b) => {
-            const aDone = a.status === 'done' ? 1 : 0;
-            const bDone = b.status === 'done' ? 1 : 0;
-            return aDone - bDone;
-          });
+          // Completed tasks stay grouped under their own "Completed" label —
+          // just nested inside this category's section instead of pulled
+          // out into one page-wide list.
+          const awaitingInGroup = group.filter((t) => t.status !== 'done');
+          const completedInGroup = group.filter((t) => t.status === 'done');
           return (
             <div key={category ?? 'general'} className="mt-6 first:mt-4">
               <h3 className="text-sm font-medium text-foreground/70">{groupLabel(category)}</h3>
               <div className="mt-2 divide-y overflow-hidden rounded-xl border bg-card text-card-foreground">
-                {ordered.map(renderTask)}
+                {awaitingInGroup.map(renderTask)}
+                {completedInGroup.length > 0 && (
+                  <>
+                    <div className="bg-muted/40 px-5 py-1.5 text-xs font-medium text-muted-foreground">
+                      Completed
+                    </div>
+                    {completedInGroup.map(renderTask)}
+                  </>
+                )}
               </div>
             </div>
           );
