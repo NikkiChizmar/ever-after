@@ -63,15 +63,24 @@ export function VendorPaymentsChart({ vendors, paymentSummary, currency }: Vendo
             />
             <Tooltip
               cursor={{ fill: 'var(--color-accent)' }}
+              shared={false}
               content={({ active, payload }) => {
                 if (!active || !payload?.length) return null;
-                const row = payload[0]!.payload as (typeof data)[number];
+                const entry = payload[0]!;
+                const row = entry.payload as (typeof data)[number];
+                // shared=false means the payload here is whichever segment
+                // (paid or remaining) the cursor is actually over, not the
+                // whole stacked bar — hovering the unfilled part shows just
+                // the remaining balance, hovering the filled part shows just
+                // what's been paid.
+                const isRemaining = entry.dataKey === 'remaining';
                 return (
                   <div className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm">
                     <p className="font-medium text-card-foreground">{row.name}</p>
                     <p className="text-muted-foreground">
-                      {formatMoney(row.paid, currency)} paid · {formatMoney(row.remaining, currency)}{' '}
-                      left of {formatMoney(row.committed, currency)}
+                      {isRemaining
+                        ? `${formatMoney(row.remaining, currency)} left of ${formatMoney(row.committed, currency)}`
+                        : `${formatMoney(row.paid, currency)} paid of ${formatMoney(row.committed, currency)}`}
                     </p>
                   </div>
                 );
