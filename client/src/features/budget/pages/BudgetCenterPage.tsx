@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useVendorPaymentSummary, useVendors } from '@/features/vendors/hooks';
 import { useWedding } from '@/features/weddings/hooks';
 import { DEMO_MODE } from '@/lib/demo';
 import { formatMoney } from '@/lib/format';
@@ -16,6 +17,8 @@ export default function BudgetCenterPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
   const { data: weddingData } = useWedding(weddingId!);
   const { data: summary, isPending, isError, error } = useBudgetSummary(weddingId!);
+  const { data: vendors } = useVendors(weddingId!);
+  const { data: paymentSummary } = useVendorPaymentSummary(weddingId!);
 
   if (isPending || !weddingData) {
     return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
@@ -39,10 +42,27 @@ export default function BudgetCenterPage() {
   // and more can be added here.
   const OUR_CATEGORIES = ['Videography', 'Live music'];
   const ourCategories = summary.categories.filter((c) => OUR_CATEGORIES.includes(c.name));
-  const ourRemaining = ourCategories.reduce(
-    (sum, c) => sum + (Number(c.committedAmount) - Number(c.paidAmount)),
-    0,
-  );
+  const ourCategoryIds = new Set(ourCategories.map((c) => c.id));
+
+  // Break the total down per vendor, not just per category — a category can
+  // hold several vendors under consideration, but only the ones with a real
+  // contract (i.e. an entry in paymentSummary) actually owe anything.
+  const ourVendorBalances = (vendors ?? [])
+    .filter((v) => v.budgetCategoryId && ourCategoryIds.has(v.budgetCategoryId))
+    .map((v) => {
+      const payment = paymentSummary?.find((p) => p.vendorId === v.id);
+      if (!payment) return null;
+      const committed = Number(payment.committedAmount);
+      const paid = Number(payment.paidAmount);
+      return {
+        vendorName: v.name,
+        categoryName: summary.categories.find((c) => c.id === v.budgetCategoryId)?.name ?? '',
+        remaining: Math.max(committed - paid, 0),
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => row !== null);
+
+  const ourRemaining = ourVendorBalances.reduce((sum, row) => sum + row.remaining, 0);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-12">
@@ -89,7 +109,7 @@ export default function BudgetCenterPage() {
         </Card>
       </div>
 
-      {ourCategories.length > 0 && (
+      {ourVendorBalances.length > 0 && (
         <Card className="mt-4 border-primary/30 bg-primary/5">
           <CardHeader>
             <CardDescription>
@@ -99,6 +119,18 @@ export default function BudgetCenterPage() {
               {formatMoney(String(ourRemaining), currency)} left to pay
             </CardTitle>
           </CardHeader>
+          <CardContent className="space-y-2 pt-0">
+            {ourVendorBalances.map((row) => (
+              <div key={row.vendorName} className="flex items-center justify-between text-sm">
+                <span className="text-card-foreground">
+                  {row.vendorName} <span className="text-muted-foreground">({row.categoryName})</span>
+                </span>
+                <span className="font-medium text-card-foreground">
+                  {formatMoney(String(row.remaining), currency)}
+                </span>
+              </div>
+            ))}
+          </CardContent>
         </Card>
       )}
 
