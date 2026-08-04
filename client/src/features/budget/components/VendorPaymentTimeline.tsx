@@ -6,19 +6,25 @@ import type { PaymentTimelineEntry } from '@/features/vendors/api';
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
+interface VendorTotal {
+  committed: number;
+  paid: number;
+}
+
 interface VendorPaymentTimelineProps {
   payments: PaymentTimelineEntry[];
   currency: string;
   /**
-   * Totals across every vendor, from the committed-vs-paid rollup (not
-   * summed from `payments` here) — a vendor's contract total is the source
-   * of truth for what's still owed even if every future installment
+   * Totals across every vendor, and per vendor, from the committed-vs-paid
+   * rollup (not summed from `payments` here) — a vendor's contract total is
+   * the source of truth for what's owed even if every future installment
    * hasn't been itemized into its own payment row yet. Summing only the
-   * logged payment rows would understate "remaining" for any vendor whose
+   * logged payment rows would understate the total for any vendor whose
    * schedule isn't fully broken out.
    */
   totalPaid: number;
   totalRemaining: number;
+  vendorTotals: Map<string, VendorTotal>;
 }
 
 /**
@@ -29,7 +35,13 @@ interface VendorPaymentTimelineProps {
  * are ordered by each vendor's earliest payment date, matching the order
  * payments arrive in from the API.
  */
-export function VendorPaymentTimeline({ payments, currency, totalPaid, totalRemaining }: VendorPaymentTimelineProps) {
+export function VendorPaymentTimeline({
+  payments,
+  currency,
+  totalPaid,
+  totalRemaining,
+  vendorTotals,
+}: VendorPaymentTimelineProps) {
   const entries = payments
     .map((p) => ({ ...p, effectiveDate: p.paidDate ?? p.dueDate }))
     .filter((p): p is typeof p & { effectiveDate: string } => p.effectiveDate !== null);
@@ -56,20 +68,20 @@ export function VendorPaymentTimeline({ payments, currency, totalPaid, totalRema
     <div>
       <div className="grid gap-4 sm:grid-cols-2">
       {[...vendorGroups.entries()].map(([vendorName, vendorEntries]) => {
-        const remaining = vendorEntries
+        const fallbackPaid = vendorEntries
+          .filter((e) => e.paidDate !== null)
+          .reduce((sum, e) => sum + Number(e.amount), 0);
+        const fallbackRemaining = vendorEntries
           .filter((e) => e.paidDate === null)
           .reduce((sum, e) => sum + Number(e.amount), 0);
+        const total = vendorTotals.get(vendorName) ?? {
+          paid: fallbackPaid,
+          committed: fallbackPaid + fallbackRemaining,
+        };
 
         return (
           <div key={vendorName} className="chart-well rounded-lg p-4">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-sm font-medium text-card-foreground">{vendorName}</p>
-              {remaining > 0 && (
-                <span className="text-xs text-muted-foreground">
-                  {formatMoney(String(remaining), currency)} left
-                </span>
-              )}
-            </div>
+            <p className="mb-3 text-sm font-medium text-card-foreground">{vendorName}</p>
             {vendorEntries.map((entry, index) => {
               const isPaid = entry.paidDate !== null;
               const isOverdue = !isPaid && entry.dueDate !== null && entry.dueDate < TODAY;
@@ -110,6 +122,10 @@ export function VendorPaymentTimeline({ payments, currency, totalPaid, totalRema
                 </div>
               );
             })}
+            <div className="mt-3 flex items-center justify-between border-t pt-3 text-sm">
+              <span className="text-muted-foreground">{formatMoney(total.paid, currency)} paid</span>
+              <span className="font-medium text-card-foreground">Total {formatMoney(total.committed, currency)}</span>
+            </div>
           </div>
         );
       })}

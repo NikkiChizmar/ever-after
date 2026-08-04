@@ -30,6 +30,17 @@ export default function VendorsPage() {
     return sum + Math.max(committed - paid, 0);
   }, 0);
 
+  const vendorNameById = new Map((vendors ?? []).map((v) => [v.id, v.name]));
+  const vendorTotals = new Map(
+    (paymentSummary ?? [])
+      .map((row) => {
+        const name = vendorNameById.get(row.vendorId);
+        if (!name) return null;
+        return [name, { committed: Number(row.committedAmount), paid: Number(row.paidAmount) }] as const;
+      })
+      .filter((entry): entry is NonNullable<typeof entry> => entry !== null),
+  );
+
   if (isPending || !weddingData) {
     return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
   }
@@ -103,6 +114,7 @@ export default function VendorsPage() {
                 currency={currency}
                 totalPaid={totalPaid}
                 totalRemaining={totalRemaining}
+                vendorTotals={vendorTotals}
               />
             </CardContent>
           </Card>
