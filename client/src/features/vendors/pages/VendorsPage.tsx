@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookedVendorsChart } from '@/features/budget/components/BookedVendorsChart';
 import { VendorPaymentTimeline } from '@/features/budget/components/VendorPaymentTimeline';
 import { VendorPipelineChart } from '@/features/budget/components/VendorPipelineChart';
 import { useBudgetSummary } from '@/features/budget/hooks';
@@ -85,22 +84,13 @@ export default function VendorsPage() {
         </Card>
       ) : (
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <Card>
+          <Card className="sm:col-span-2">
             <CardHeader>
               <CardTitle className="text-base font-medium">Booked vs. declined</CardTitle>
               <CardDescription>Every vendor considered, by category and outcome.</CardDescription>
             </CardHeader>
             <CardContent>
               <VendorPipelineChart vendors={vendors} />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base font-medium">Booked vendor costs</CardTitle>
-              <CardDescription>What you've locked in, ranked by cost.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <BookedVendorsChart vendors={vendors} currency={currency} />
             </CardContent>
           </Card>
           <Card className="sm:col-span-2">
