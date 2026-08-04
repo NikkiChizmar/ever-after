@@ -39,7 +39,7 @@ export function BookedVendorsChart({ vendors, currency }: BookedVendorsChartProp
 
   return (
     <div>
-      <div style={{ height: Math.max(data.length * ROW_HEIGHT, 120) }}>
+      <div className="chart-well" style={{ height: Math.max(data.length * ROW_HEIGHT, 120) }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ top: 0, right: 24, bottom: 0, left: 0 }}>
             <XAxis type="number" hide />
@@ -57,7 +57,7 @@ export function BookedVendorsChart({ vendors, currency }: BookedVendorsChartProp
                 if (!active || !payload?.length) return null;
                 const row = payload[0]!.payload as (typeof data)[number];
                 return (
-                  <div className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm">
+                  <div className="chart-tooltip">
                     <p className="font-medium text-card-foreground">{row.name}</p>
                     <p className="text-muted-foreground">
                       {row.category} · {formatMoney(row.cost, currency)}

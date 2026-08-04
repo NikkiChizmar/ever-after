@@ -51,7 +51,7 @@ export function VendorPipelineChart({ vendors }: VendorPipelineChartProps) {
 
   return (
     <div>
-      <div style={{ height: Math.max(data.length * ROW_HEIGHT, 120) }}>
+      <div className="chart-well" style={{ height: Math.max(data.length * ROW_HEIGHT, 120) }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ top: 0, right: 24, bottom: 0, left: 0 }}>
             <CartesianGrid horizontal={false} stroke="var(--color-border)" />
@@ -76,7 +76,7 @@ export function VendorPipelineChart({ vendors }: VendorPipelineChartProps) {
                 if (!active || !payload?.length) return null;
                 const nonZero = payload.filter((entry) => Number(entry.value) > 0);
                 return (
-                  <div className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm">
+                  <div className="chart-tooltip">
                     <p className="font-medium text-card-foreground">{label}</p>
                     {nonZero.map((entry) => (
                       <p key={entry.dataKey as string} className="text-muted-foreground">

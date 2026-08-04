@@ -75,7 +75,7 @@ export function CategorySpendChart({ summary, currency }: CategorySpendChartProp
                 if (!active || !payload?.length) return null;
                 const slice = payload[0]!;
                 return (
-                  <div className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm">
+                  <div className="chart-tooltip">
                     <p className="font-medium text-card-foreground">{slice.name}</p>
                     <p className="text-muted-foreground">
                       {formatMoney(slice.value as number, currency)}

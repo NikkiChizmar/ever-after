@@ -49,7 +49,7 @@ export function VendorPaymentsChart({ vendors, paymentSummary, currency }: Vendo
 
   return (
     <div>
-      <div style={{ height: Math.max(data.length * ROW_HEIGHT, 120) }}>
+      <div className="chart-well" style={{ height: Math.max(data.length * ROW_HEIGHT, 120) }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ top: 0, right: 24, bottom: 0, left: 0 }}>
             <XAxis type="number" hide />
@@ -75,7 +75,7 @@ export function VendorPaymentsChart({ vendors, paymentSummary, currency }: Vendo
                 // what's been paid.
                 const isRemaining = entry.dataKey === 'remaining';
                 return (
-                  <div className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm">
+                  <div className="chart-tooltip">
                     <p className="font-medium text-card-foreground">{row.name}</p>
                     <p className="text-muted-foreground">
                       {isRemaining
