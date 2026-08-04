@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookedVendorsChart } from '@/features/budget/components/BookedVendorsChart';
-import { VendorPaymentsChart } from '@/features/budget/components/VendorPaymentsChart';
 import { VendorPaymentTimeline } from '@/features/budget/components/VendorPaymentTimeline';
 import { VendorPipelineChart } from '@/features/budget/components/VendorPipelineChart';
 import { useBudgetSummary } from '@/features/budget/hooks';
@@ -18,8 +17,18 @@ export default function VendorsPage() {
   const { data: weddingData } = useWedding(weddingId!);
   const { data: summary, isPending, isError, error } = useBudgetSummary(weddingId!);
   const { data: vendors } = useVendors(weddingId!);
-  const { data: paymentSummary } = useVendorPaymentSummary(weddingId!);
   const { data: paymentsTimeline } = usePaymentsTimeline(weddingId!);
+  const { data: paymentSummary } = useVendorPaymentSummary(weddingId!);
+
+  // Committed-vs-paid rollup, not a sum of the timeline's payment rows —
+  // a contract's total is the source of truth for what's owed even for
+  // vendors whose remaining installments aren't all itemized yet.
+  const totalPaid = (paymentSummary ?? []).reduce((sum, row) => sum + Number(row.paidAmount), 0);
+  const totalRemaining = (paymentSummary ?? []).reduce((sum, row) => {
+    const committed = Number(row.committedAmount);
+    const paid = Math.min(Number(row.paidAmount), committed);
+    return sum + Math.max(committed - paid, 0);
+  }, 0);
 
   if (isPending || !weddingData) {
     return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
@@ -85,24 +94,16 @@ export default function VendorsPage() {
           </Card>
           <Card className="sm:col-span-2">
             <CardHeader>
-              <CardTitle className="text-base font-medium">Payments by vendor</CardTitle>
-              <CardDescription>What's been paid so far vs. what's left on each contract.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <VendorPaymentsChart
-                vendors={vendors}
-                paymentSummary={paymentSummary ?? []}
-                currency={currency}
-              />
-            </CardContent>
-          </Card>
-          <Card className="sm:col-span-2">
-            <CardHeader>
               <CardTitle className="text-base font-medium">Payment timeline</CardTitle>
               <CardDescription>Paid and upcoming payments, broken out by vendor.</CardDescription>
             </CardHeader>
             <CardContent>
-              <VendorPaymentTimeline payments={paymentsTimeline ?? []} currency={currency} />
+              <VendorPaymentTimeline
+                payments={paymentsTimeline ?? []}
+                currency={currency}
+                totalPaid={totalPaid}
+                totalRemaining={totalRemaining}
+              />
             </CardContent>
           </Card>
         </div>

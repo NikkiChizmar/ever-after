@@ -9,6 +9,16 @@ const TODAY = new Date().toISOString().slice(0, 10);
 interface VendorPaymentTimelineProps {
   payments: PaymentTimelineEntry[];
   currency: string;
+  /**
+   * Totals across every vendor, from the committed-vs-paid rollup (not
+   * summed from `payments` here) — a vendor's contract total is the source
+   * of truth for what's still owed even if every future installment
+   * hasn't been itemized into its own payment row yet. Summing only the
+   * logged payment rows would understate "remaining" for any vendor whose
+   * schedule isn't fully broken out.
+   */
+  totalPaid: number;
+  totalRemaining: number;
 }
 
 /**
@@ -19,7 +29,7 @@ interface VendorPaymentTimelineProps {
  * are ordered by each vendor's earliest payment date, matching the order
  * payments arrive in from the API.
  */
-export function VendorPaymentTimeline({ payments, currency }: VendorPaymentTimelineProps) {
+export function VendorPaymentTimeline({ payments, currency, totalPaid, totalRemaining }: VendorPaymentTimelineProps) {
   const entries = payments
     .map((p) => ({ ...p, effectiveDate: p.paidDate ?? p.dueDate }))
     .filter((p): p is typeof p & { effectiveDate: string } => p.effectiveDate !== null);
@@ -43,7 +53,8 @@ export function VendorPaymentTimeline({ payments, currency }: VendorPaymentTimel
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div>
+      <div className="grid gap-4 sm:grid-cols-2">
       {[...vendorGroups.entries()].map(([vendorName, vendorEntries]) => {
         const remaining = vendorEntries
           .filter((e) => e.paidDate === null)
@@ -102,6 +113,19 @@ export function VendorPaymentTimeline({ payments, currency }: VendorPaymentTimel
           </div>
         );
       })}
+      </div>
+      <div className="mt-4 flex items-center justify-between border-t pt-3 text-sm">
+        <span className="font-medium text-card-foreground">Paid so far</span>
+        <span className="font-display text-base font-medium text-card-foreground">
+          {formatMoney(totalPaid, currency)}
+        </span>
+      </div>
+      <div className="mt-1 flex items-center justify-between text-sm">
+        <span className="font-medium text-card-foreground">Remaining</span>
+        <span className="font-display text-base font-medium text-card-foreground">
+          {formatMoney(totalRemaining, currency)}
+        </span>
+      </div>
     </div>
   );
 }
