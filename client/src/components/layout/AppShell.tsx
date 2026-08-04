@@ -26,7 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="border-b">
+      <header className="glass-header sticky top-0 z-50">
         <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-6">
           <div className="flex items-center gap-8">
             <Link to="/" className="font-display text-xl font-medium tracking-tight">
@@ -95,7 +95,7 @@ function TabNav({ tabs }: { tabs: { to: string; label: string }[] }) {
       {indicator && (
         <span
           aria-hidden="true"
-          className="bg-nav-active absolute inset-y-0 rounded-md transition-[left,width] duration-300 ease-out"
+          className="nav-active-pill absolute inset-y-0 rounded-md transition-[left,width] duration-300 ease-out"
           style={{ left: indicator.left, width: indicator.width }}
         />
       )}

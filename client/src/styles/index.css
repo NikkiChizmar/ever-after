@@ -80,9 +80,44 @@
   /* Active-tab indicator (AppShell nav) — reuses the same pastel green as
    * the "booked" chart segment rather than inventing a new hue, so "this is
    * where you are" and "this is done/confirmed" read as the same color
-   * language across the app. */
+   * language across the app. Foreground is near-white now (was a dark
+   * green) — the nav pill below became a richer gradient rather than a
+   * flat pastel fill, and dark text lost contrast against it. */
   --nav-active: var(--chart-4);
-  --nav-active-foreground: oklch(0.28 0.05 145);
+  --nav-active-foreground: oklch(0.99 0.01 100);
+
+  /* ---- Glass/depth system ----
+   * Same treatment built for the personal finance dashboard (frosted-glass
+   * surfaces, layered ambient shadows, a soft corner glow, a horizontal
+   * nav banner), translated to this app's own green/gold palette instead
+   * of that project's pink/violet — every color below is an oklch() literal
+   * matching an existing token (--foreground for the dark "ink" shadow
+   * layers, a mid-saturation green close to --primary for the colored
+   * ambient glow layers), not a new hue introduced for this alone.
+   */
+  --glass-fill: oklch(0.99 0.006 90 / 0.66);
+  --glass-fill-strong: oklch(0.99 0.006 90 / 0.85);
+  --glass-border: oklch(1 0 0 / 0.7);
+  --glass-blur: 20px;
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t-fast: 0.15s;
+  --t-base: 0.25s;
+  --t-slow: 0.45s;
+
+  /* Multi-layer shadows: hairline + contact + two ambient glows at
+   * different spreads, so elements read as physically lifted off the page
+   * rather than merely outlined. Dark layers use --foreground's hue
+   * (warm near-black green) instead of pure black; colored glow layers use
+   * a mid-tone matching --primary's hue family. */
+  --shadow-xs: 0 1px 1px oklch(0.32 0.025 130 / 0.05), 0 2px 4px oklch(0.32 0.025 130 / 0.04);
+  --shadow-sm: 0 1px 2px oklch(0.32 0.025 130 / 0.06), 0 4px 10px -2px oklch(0.32 0.025 130 / 0.07), 0 8px 20px -6px oklch(0.6 0.09 130 / 0.14);
+  --shadow: 0 1px 2px oklch(0.32 0.025 130 / 0.06), 0 6px 14px -4px oklch(0.32 0.025 130 / 0.08), 0 18px 34px -10px oklch(0.6 0.09 130 / 0.2), 0 32px 64px -20px oklch(0.5 0.09 130 / 0.16);
+  --shadow-md: 0 2px 4px oklch(0.32 0.025 130 / 0.08), 0 10px 22px -6px oklch(0.32 0.025 130 / 0.1), 0 28px 52px -14px oklch(0.6 0.09 130 / 0.26), 0 48px 90px -26px oklch(0.5 0.09 130 / 0.2);
+  --shadow-lg: 0 4px 8px oklch(0.32 0.025 130 / 0.1), 0 16px 32px -8px oklch(0.32 0.025 130 / 0.12), 0 40px 72px -18px oklch(0.6 0.09 130 / 0.32), 0 64px 120px -30px oklch(0.5 0.09 130 / 0.24);
+  --shadow-xl: 0 8px 16px oklch(0.32 0.025 130 / 0.14), 0 28px 52px -12px oklch(0.32 0.025 130 / 0.16), 0 56px 100px -22px oklch(0.6 0.09 130 / 0.36), 0 90px 150px -36px oklch(0.5 0.09 130 / 0.28);
+  --inset-highlight: inset 0 1.5px 0 oklch(1 0 0 / 0.9), inset 0 0 0 1px oklch(1 0 0 / 0.25);
+  --inset-highlight-soft: inset 0 1px 0 oklch(1 0 0 / 0.55);
 }
 
 /*
@@ -147,7 +182,25 @@
   --chart-7: oklch(0.8 0.07 300); /* purple */
 
   --nav-active: var(--chart-4);
-  --nav-active-foreground: oklch(0.28 0.05 145);
+  --nav-active-foreground: oklch(0.99 0.01 100);
+
+  /* Same glass system as :root, translated for a light ivory card floating
+   * on a darker/saturated page — glass fill lightens further (the card is
+   * already the light surface here), shadows drop the double-tinted ambient
+   * glow layers to plain dark ones plus one green-tinted glow instead of
+   * two, and the inset highlight softens since there's less light bouncing
+   * off a saturated backdrop than a pale one. */
+  --glass-fill: oklch(0.97 0.014 100 / 0.62);
+  --glass-fill-strong: oklch(0.97 0.014 100 / 0.88);
+  --glass-border: oklch(1 0 0 / 0.12);
+  --shadow-xs: 0 1px 2px oklch(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.45), 0 6px 14px -3px oklch(0 0 0 / 0.5), 0 4px 16px -4px oklch(0.83 0.07 145 / 0.12);
+  --shadow: 0 2px 4px oklch(0 0 0 / 0.5), 0 10px 22px -6px oklch(0 0 0 / 0.55), 0 26px 48px -14px oklch(0 0 0 / 0.55), 0 40px 80px -20px oklch(0.83 0.07 145 / 0.16);
+  --shadow-md: 0 3px 6px oklch(0 0 0 / 0.55), 0 16px 32px -8px oklch(0 0 0 / 0.6), 0 36px 64px -16px oklch(0 0 0 / 0.6), 0 56px 100px -24px oklch(0.83 0.07 145 / 0.2);
+  --shadow-lg: 0 6px 12px oklch(0 0 0 / 0.6), 0 24px 48px -12px oklch(0 0 0 / 0.65), 0 52px 96px -20px oklch(0 0 0 / 0.65), 0 80px 140px -30px oklch(0.83 0.07 145 / 0.24);
+  --shadow-xl: 0 10px 20px oklch(0 0 0 / 0.65), 0 36px 64px -14px oklch(0 0 0 / 0.7), 0 72px 130px -26px oklch(0 0 0 / 0.7), 0 110px 180px -36px oklch(0.83 0.07 145 / 0.28);
+  --inset-highlight: inset 0 1px 0 oklch(1 0 0 / 0.08), inset 0 0 0 1px oklch(1 0 0 / 0.04);
+  --inset-highlight-soft: inset 0 1px 0 oklch(1 0 0 / 0.04);
 }
 
 @theme inline {
@@ -200,8 +253,95 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Mesh-gradient wash instead of a flat page color — four soft radial
+   * blobs pulled from the app's own palette (sage green, gold, orange,
+   * olive), each low-alpha enough that --background still reads through
+   * as the dominant tone. Fixed attachment so the wash doesn't scroll
+   * with content. Matches the finance dashboard's "manufactured surface,
+   * not a flat CSS gradient" treatment, recolored to this app's family. */
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image:
+      radial-gradient(1100px 620px at -6% -12%, oklch(0.85 0.06 145 / 0.35), transparent 55%),
+      radial-gradient(900px 700px at 108% -8%, oklch(0.92 0.04 85 / 0.28), transparent 52%),
+      radial-gradient(1000px 800px at 96% 105%, oklch(0.83 0.09 55 / 0.2), transparent 55%),
+      radial-gradient(1200px 900px at 6% 108%, oklch(0.74 0.07 130 / 0.24), transparent 58%);
+    background-attachment: fixed;
+  }
+  /* Fine film-grain over the mesh -- barely perceptible, pure CSS/SVG (a
+   * turbulence filter piped through a data-URI), no image asset. Sits
+   * above the mesh gradient and the doodle pattern (both further back)
+   * but below every real content layer. */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  }
+}
+
+/*
+ * Glass/depth component classes — go in @layer components (not plain
+ * top-level CSS) so Tailwind utility classes passed via className (e.g.
+ * `border-dashed`, `hover:border-primary/40`) still win over these
+ * defaults; Tailwind v4's utilities layer always outranks components.
+ */
+@layer components {
+  .glass-surface {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: linear-gradient(var(--glass-fill-strong), var(--glass-fill));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow), var(--inset-highlight);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    transition: box-shadow var(--t-base) var(--ease-standard);
+  }
+  /* Soft blurred color blob glowing from one corner -- an ambient "light
+   * source" behind the glass, same trick as the finance dashboard's hero
+   * KPI cards, applied to every card here rather than a separate variant. */
+  .glass-surface::before {
+    content: '';
+    position: absolute;
+    top: -55%;
+    right: -35%;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, oklch(0.85 0.06 145 / 0.5), oklch(0.85 0.06 145 / 0) 70%);
+    filter: blur(6px);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .glass-surface:hover {
+    box-shadow: var(--shadow-md), var(--inset-highlight);
+  }
+
+  .glass-header {
+    background: linear-gradient(180deg, var(--glass-fill-strong), var(--glass-fill));
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.5) inset,
+      0 12px 28px -14px oklch(0.32 0.025 130 / 0.28),
+      0 2px 8px oklch(0.32 0.025 130 / 0.06);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  }
+
+  /* Active-tab pill (AppShell TabNav) -- a gradient fill + glow shadow
+   * instead of the old flat pastel-green rectangle, matching the nav
+   * banner treatment built for the finance dashboard. */
+  .nav-active-pill {
+    background: linear-gradient(135deg, oklch(0.92 0.05 145), var(--chart-4) 55%, oklch(0.55 0.08 140));
+    box-shadow:
+      0 4px 14px -2px oklch(0.55 0.08 140 / 0.5),
+      0 1px 3px oklch(0.55 0.08 140 / 0.3),
+      inset 0 1px 0 oklch(1 0 0 / 0.55);
   }
 }
 
