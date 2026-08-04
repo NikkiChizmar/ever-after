@@ -99,7 +99,7 @@ export default function VendorsPage() {
           <Card className="sm:col-span-2">
             <CardHeader>
               <CardTitle className="text-base font-medium">Payment timeline</CardTitle>
-              <CardDescription>Every payment, paid and upcoming, in one chronological line.</CardDescription>
+              <CardDescription>Paid and upcoming payments, broken out by vendor.</CardDescription>
             </CardHeader>
             <CardContent>
               <VendorPaymentTimeline payments={paymentsTimeline ?? []} currency={currency} />

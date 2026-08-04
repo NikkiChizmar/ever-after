@@ -12,12 +12,12 @@ interface VendorPaymentTimelineProps {
 }
 
 /**
- * One continuous chronological line of every payment across every
- * vendor — already-paid entries (sorted by paid_date) flow straight into
- * still-scheduled ones (sorted by due_date), with a "Today" marker where
- * the two meet, so the whole payment story reads top to bottom rather
- * than needing two separate "paid" and "upcoming" lists cross-referenced
- * by eye.
+ * Every vendor gets its own block, so the payment story reads vendor by
+ * vendor instead of one flat line where entries from different vendors
+ * blur together. Within a block, that vendor's own payments (paid, then
+ * scheduled) still run top to bottom on a short connecting line. Blocks
+ * are ordered by each vendor's earliest payment date, matching the order
+ * payments arrive in from the API.
  */
 export function VendorPaymentTimeline({ payments, currency }: VendorPaymentTimelineProps) {
   const entries = payments
@@ -32,59 +32,73 @@ export function VendorPaymentTimeline({ payments, currency }: VendorPaymentTimel
     );
   }
 
-  const todayIndex = entries.findIndex((e) => e.effectiveDate > TODAY);
+  const vendorGroups = new Map<string, typeof entries>();
+  for (const entry of entries) {
+    const group = vendorGroups.get(entry.vendorName);
+    if (group) {
+      group.push(entry);
+    } else {
+      vendorGroups.set(entry.vendorName, [entry]);
+    }
+  }
 
   return (
-    <div>
-      {entries.map((entry, index) => {
-        const isPaid = entry.paidDate !== null;
-        const isOverdue = !isPaid && entry.dueDate !== null && entry.dueDate < TODAY;
-        const isLast = index === entries.length - 1;
+    <div className="grid gap-4 sm:grid-cols-2">
+      {[...vendorGroups.entries()].map(([vendorName, vendorEntries]) => {
+        const remaining = vendorEntries
+          .filter((e) => e.paidDate === null)
+          .reduce((sum, e) => sum + Number(e.amount), 0);
 
         return (
-          <div key={entry.id}>
-            {index === todayIndex && todayIndex > 0 && (
-              <div className="mb-5 flex items-center gap-2 pl-8 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                <span className="h-px flex-1 bg-border" />
-                Today
-                <span className="h-px flex-1 bg-border" />
-              </div>
-            )}
-            <div className={cn('relative flex gap-4', !isLast && 'pb-5')}>
-              {!isLast && (
-                <span
-                  aria-hidden="true"
-                  className="absolute left-[7px] top-4 bottom-0 w-px bg-border"
-                />
+          <div key={vendorName} className="chart-well rounded-lg p-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="text-sm font-medium text-card-foreground">{vendorName}</p>
+              {remaining > 0 && (
+                <span className="text-xs text-muted-foreground">
+                  {formatMoney(String(remaining), currency)} left
+                </span>
               )}
-              <span
-                className={cn(
-                  'relative z-10 mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 bg-card',
-                  isPaid && 'border-primary bg-primary',
-                  isOverdue && 'border-destructive',
-                )}
-              >
-                {isPaid && <CheckIcon className="size-2.5 text-primary-foreground" />}
-              </span>
-              <div className="flex-1 pb-0.5">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium text-card-foreground">
-                    {entry.vendorName}{' '}
-                    <span className="font-normal text-muted-foreground">· {entry.label}</span>
-                  </p>
-                  <span className="font-display text-sm font-medium text-card-foreground">
-                    {formatMoney(entry.amount, currency)}
-                  </span>
-                </div>
-                <p className={cn('text-xs text-muted-foreground', isOverdue && 'font-medium text-destructive')}>
-                  {isPaid
-                    ? `Paid ${formatDate(entry.effectiveDate)}`
-                    : isOverdue
-                      ? `Overdue since ${formatDate(entry.effectiveDate)}`
-                      : `Due ${formatDate(entry.effectiveDate)}`}
-                </p>
-              </div>
             </div>
+            {vendorEntries.map((entry, index) => {
+              const isPaid = entry.paidDate !== null;
+              const isOverdue = !isPaid && entry.dueDate !== null && entry.dueDate < TODAY;
+              const isLast = index === vendorEntries.length - 1;
+
+              return (
+                <div key={entry.id} className={cn('relative flex gap-3', !isLast && 'pb-4')}>
+                  {!isLast && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-[5px] top-4 bottom-0 w-px bg-border"
+                    />
+                  )}
+                  <span
+                    className={cn(
+                      'relative z-10 mt-0.5 flex size-3 shrink-0 items-center justify-center rounded-full border-2 bg-card',
+                      isPaid && 'border-primary bg-primary',
+                      isOverdue && 'border-destructive',
+                    )}
+                  >
+                    {isPaid && <CheckIcon className="size-2 text-primary-foreground" />}
+                  </span>
+                  <div className="flex-1 pb-0.5">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm text-card-foreground">{entry.label}</p>
+                      <span className="font-display text-sm font-medium text-card-foreground">
+                        {formatMoney(entry.amount, currency)}
+                      </span>
+                    </div>
+                    <p className={cn('text-xs text-muted-foreground', isOverdue && 'font-medium text-destructive')}>
+                      {isPaid
+                        ? `Paid ${formatDate(entry.effectiveDate)}`
+                        : isOverdue
+                          ? `Overdue since ${formatDate(entry.effectiveDate)}`
+                          : `Due ${formatDate(entry.effectiveDate)}`}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         );
       })}
