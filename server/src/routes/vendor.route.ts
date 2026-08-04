@@ -10,6 +10,7 @@ import {
   createPayment,
   deletePayment,
   listPayments,
+  listPaymentsTimeline,
   updatePayment,
 } from '../controllers/payment.controller.js';
 import {
@@ -28,6 +29,9 @@ export const vendorRouter: Router = Router({ mergeParams: true });
 // Registered before /vendors/:vendorId isn't required (different path), but
 // kept up top to mirror budget-summary's placement in budget.route.ts.
 vendorRouter.get('/vendor-payment-summary', requireWeddingRole('viewer'), getVendorPaymentSummary);
+// Every payment across every vendor, each with the paying vendor's name —
+// backs the payment timeline on the Vendors tab.
+vendorRouter.get('/payments-timeline', requireWeddingRole('viewer'), listPaymentsTimeline);
 
 vendorRouter.get('/vendors', requireWeddingRole('viewer'), listVendors);
 vendorRouter.post('/vendors', requireWeddingRole('editor'), createVendor);

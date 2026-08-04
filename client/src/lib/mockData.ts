@@ -1,7 +1,7 @@
 import type { AuthUser } from '@/features/auth/api';
 import type { BudgetSummary } from '@/features/budget/api';
 import type { Task } from '@/features/tasks/api';
-import type { Vendor, VendorPaymentSummary } from '@/features/vendors/api';
+import type { PaymentTimelineEntry, Vendor, VendorPaymentSummary } from '@/features/vendors/api';
 import type { Member, Wedding, WeddingRole } from '@/features/weddings/api';
 
 /**
@@ -337,6 +337,65 @@ export const DEMO_VENDOR_PAYMENTS: VendorPaymentSummary[] = [
   { vendorId: 'vendor-amber-oak', committedAmount: '4300', paidAmount: '1075' },
   { vendorId: 'vendor-ivy-bramble', committedAmount: '2050', paidAmount: '500' },
   { vendorId: 'vendor-bloom-brush', committedAmount: '850', paidAmount: '200' },
+];
+
+// One "Deposit" (paid, past) + one "Remaining balance" (due, future) row
+// per booked vendor above — the deposit/remaining split matches each
+// vendor's committed/paid pair exactly, just broken into individual
+// payment rows the way the timeline needs. Dates are relative to today
+// (daysFromNow) so the demo never looks stale, same technique as
+// DEMO_TASKS' due dates.
+export const DEMO_PAYMENTS_TIMELINE: PaymentTimelineEntry[] = [
+  {
+    id: 'payment-willowmere-deposit', weddingId: DEMO_WEDDING_ID, contractId: 'contract-willowmere',
+    vendorName: 'Willowmere Estate', label: 'Deposit', amount: '3550',
+    dueDate: null, paidDate: daysFromNow(-95), method: 'transfer', notes: null,
+  },
+  {
+    id: 'payment-willowmere-balance', weddingId: DEMO_WEDDING_ID, contractId: 'contract-willowmere',
+    vendorName: 'Willowmere Estate', label: 'Remaining balance', amount: '10650',
+    dueDate: daysFromNow(180), paidDate: null, method: null, notes: null,
+  },
+  {
+    id: 'payment-saffron-deposit', weddingId: DEMO_WEDDING_ID, contractId: 'contract-saffron',
+    vendorName: 'Saffron Table Catering', label: 'Deposit', amount: '1900',
+    dueDate: null, paidDate: daysFromNow(-60), method: 'card', notes: null,
+  },
+  {
+    id: 'payment-saffron-balance', weddingId: DEMO_WEDDING_ID, contractId: 'contract-saffron',
+    vendorName: 'Saffron Table Catering', label: 'Remaining balance', amount: '5700',
+    dueDate: daysFromNow(150), paidDate: null, method: null, notes: null,
+  },
+  {
+    id: 'payment-amber-oak-deposit', weddingId: DEMO_WEDDING_ID, contractId: 'contract-amber-oak',
+    vendorName: 'Amber & Oak Photography', label: 'Deposit', amount: '1075',
+    dueDate: null, paidDate: daysFromNow(-40), method: 'card', notes: null,
+  },
+  {
+    id: 'payment-amber-oak-balance', weddingId: DEMO_WEDDING_ID, contractId: 'contract-amber-oak',
+    vendorName: 'Amber & Oak Photography', label: 'Remaining balance', amount: '3225',
+    dueDate: daysFromNow(200), paidDate: null, method: null, notes: null,
+  },
+  {
+    id: 'payment-ivy-bramble-deposit', weddingId: DEMO_WEDDING_ID, contractId: 'contract-ivy-bramble',
+    vendorName: 'Ivy & Bramble Florals', label: 'Deposit', amount: '500',
+    dueDate: null, paidDate: daysFromNow(-15), method: 'check', notes: null,
+  },
+  {
+    id: 'payment-ivy-bramble-balance', weddingId: DEMO_WEDDING_ID, contractId: 'contract-ivy-bramble',
+    vendorName: 'Ivy & Bramble Florals', label: 'Remaining balance', amount: '1550',
+    dueDate: daysFromNow(220), paidDate: null, method: null, notes: null,
+  },
+  {
+    id: 'payment-bloom-brush-deposit', weddingId: DEMO_WEDDING_ID, contractId: 'contract-bloom-brush',
+    vendorName: 'Bloom & Brush Beauty', label: 'Deposit', amount: '200',
+    dueDate: null, paidDate: daysFromNow(-5), method: 'cash', notes: null,
+  },
+  {
+    id: 'payment-bloom-brush-balance', weddingId: DEMO_WEDDING_ID, contractId: 'contract-bloom-brush',
+    vendorName: 'Bloom & Brush Beauty', label: 'Remaining balance', amount: '650',
+    dueDate: daysFromNow(3), paidDate: null, method: null, notes: null,
+  },
 ];
 
 export const DEMO_TASKS: Task[] = [

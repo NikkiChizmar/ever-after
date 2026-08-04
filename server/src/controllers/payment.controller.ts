@@ -14,6 +14,11 @@ export async function listPayments(req: Request, res: Response) {
   res.json({ payments });
 }
 
+export async function listPaymentsTimeline(req: Request, res: Response) {
+  const payments = await paymentService.listPaymentsForWedding(req.membership!.weddingId);
+  res.json({ payments });
+}
+
 const createPaymentSchema = z.object({
   label: z.string().trim().min(1, 'A label is required, e.g. "Deposit"').max(120),
   // Negative amounts are the deliberate refund mechanism — see docs/data-model.md §2.13.

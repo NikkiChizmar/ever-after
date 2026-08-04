@@ -39,6 +39,35 @@ export async function listPaymentsForContract(weddingId: string, contractId: str
   );
 }
 
+export interface PaymentTimelineEntry extends Payment {
+  vendorName: string;
+}
+
+/**
+ * Every payment across every vendor for a wedding, each carrying its
+ * vendor's name — the timeline view on the Vendors tab needs "who" as much
+ * as "when," and joining that per-row here is simpler than the client
+ * cross-referencing vendor-payment-summary + a vendor list itself.
+ *
+ * Ordered by whichever date actually matters for a given row: paid_date if
+ * it's been paid, due_date if it's still scheduled, so the sequence reads
+ * as one continuous past-to-future timeline rather than two groups.
+ */
+export async function listPaymentsForWedding(weddingId: string): Promise<PaymentTimelineEntry[]> {
+  return query<PaymentTimelineEntry>(
+    `SELECT
+        p.id, p.wedding_id AS "weddingId", p.contract_id AS "contractId", p.label, p.amount,
+        p.due_date AS "dueDate", p.paid_date AS "paidDate", p.method, p.notes,
+        v.name AS "vendorName"
+       FROM payments p
+       JOIN contracts c ON c.id = p.contract_id
+       JOIN vendors v ON v.id = c.vendor_id
+      WHERE v.wedding_id = $1
+      ORDER BY COALESCE(p.paid_date, p.due_date) NULLS LAST, p.created_at`,
+    [weddingId],
+  );
+}
+
 interface CreatePaymentInput {
   label: string;
   amount: number;

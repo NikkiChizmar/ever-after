@@ -2,6 +2,7 @@ import { ApiError } from './api';
 import {
   DEMO_BUDGET_SUMMARY,
   DEMO_MEMBERS,
+  DEMO_PAYMENTS_TIMELINE,
   DEMO_ROLE,
   DEMO_TASKS,
   DEMO_USER,
@@ -51,6 +52,9 @@ export function mockApi<T>(path: string, options: RequestOptions = {}): T {
     }
     if (segments[0] === 'weddings' && segments[2] === 'vendor-payment-summary') {
       return { vendorPayments: DEMO_VENDOR_PAYMENTS } as T;
+    }
+    if (segments[0] === 'weddings' && segments[2] === 'payments-timeline') {
+      return { payments: DEMO_PAYMENTS_TIMELINE } as T;
     }
     if (segments[0] === 'weddings' && segments[2] === 'budget-summary') {
       return DEMO_BUDGET_SUMMARY as T;

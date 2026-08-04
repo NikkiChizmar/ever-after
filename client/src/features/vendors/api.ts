@@ -28,6 +28,21 @@ export interface VendorPaymentSummary {
   paidAmount: string;
 }
 
+export type PaymentMethod = 'card' | 'check' | 'transfer' | 'cash' | 'other';
+
+export interface PaymentTimelineEntry {
+  id: string;
+  weddingId: string;
+  contractId: string;
+  vendorName: string;
+  label: string;
+  amount: string;
+  dueDate: string | null;
+  paidDate: string | null;
+  method: PaymentMethod | null;
+  notes: string | null;
+}
+
 export interface CreateVendorInput {
   name: string;
   category: VendorCategory;
@@ -44,6 +59,8 @@ export const vendorApi = {
   list: (weddingId: string) => api<{ vendors: Vendor[] }>(`/weddings/${weddingId}/vendors`),
   paymentSummary: (weddingId: string) =>
     api<{ vendorPayments: VendorPaymentSummary[] }>(`/weddings/${weddingId}/vendor-payment-summary`),
+  paymentsTimeline: (weddingId: string) =>
+    api<{ payments: PaymentTimelineEntry[] }>(`/weddings/${weddingId}/payments-timeline`),
   create: (weddingId: string, input: CreateVendorInput) =>
     api<{ vendor: Vendor }>(`/weddings/${weddingId}/vendors`, { method: 'POST', body: input }),
   update: (weddingId: string, vendorId: string, input: UpdateVendorInput) =>

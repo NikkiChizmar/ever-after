@@ -23,6 +23,15 @@ export function useVendorPaymentSummary(weddingId: string) {
   });
 }
 
+const paymentsTimelineKey = (weddingId: string) => ['weddings', weddingId, 'payments-timeline'];
+
+export function usePaymentsTimeline(weddingId: string) {
+  return useQuery({
+    queryKey: paymentsTimelineKey(weddingId),
+    queryFn: async () => (await vendorApi.paymentsTimeline(weddingId)).payments,
+  });
+}
+
 export function useCreateVendor(weddingId: string) {
   const queryClient = useQueryClient();
   return useMutation({

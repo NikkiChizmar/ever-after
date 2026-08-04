@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookedVendorsChart } from '@/features/budget/components/BookedVendorsChart';
 import { VendorPaymentsChart } from '@/features/budget/components/VendorPaymentsChart';
+import { VendorPaymentTimeline } from '@/features/budget/components/VendorPaymentTimeline';
 import { VendorPipelineChart } from '@/features/budget/components/VendorPipelineChart';
 import { useBudgetSummary } from '@/features/budget/hooks';
 import { useWedding } from '@/features/weddings/hooks';
 import { DEMO_MODE } from '@/lib/demo';
 import { AddVendorDialog } from '../components/AddVendorDialog';
-import { useVendorPaymentSummary, useVendors } from '../hooks';
+import { usePaymentsTimeline, useVendorPaymentSummary, useVendors } from '../hooks';
 
 export default function VendorsPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
@@ -18,6 +19,7 @@ export default function VendorsPage() {
   const { data: summary, isPending, isError, error } = useBudgetSummary(weddingId!);
   const { data: vendors } = useVendors(weddingId!);
   const { data: paymentSummary } = useVendorPaymentSummary(weddingId!);
+  const { data: paymentsTimeline } = usePaymentsTimeline(weddingId!);
 
   if (isPending || !weddingData) {
     return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
@@ -92,6 +94,15 @@ export default function VendorsPage() {
                 paymentSummary={paymentSummary ?? []}
                 currency={currency}
               />
+            </CardContent>
+          </Card>
+          <Card className="sm:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Payment timeline</CardTitle>
+              <CardDescription>Every payment, paid and upcoming, in one chronological line.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <VendorPaymentTimeline payments={paymentsTimeline ?? []} currency={currency} />
             </CardContent>
           </Card>
         </div>
