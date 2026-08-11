@@ -99,6 +99,11 @@ export default function AwaitingTasksPage() {
         <div className="mt-6 space-y-6">
           {GROUP_ORDER.map((category) => {
             const group = tasks.filter((t) => t.category === category);
+            // "General" (no category picked) is a catch-all, not a planned
+            // event — an empty one is just noise, and its "Add task" prompt
+            // would duplicate the page-level button above. Skip it; the
+            // named events (Welcome party, Ceremony, etc.) still show empty.
+            if (group.length === 0 && category === null) return null;
             // Completed tasks stay grouped under their own "Completed" label —
             // just nested inside this category's section instead of pulled
             // out into one page-wide list.
