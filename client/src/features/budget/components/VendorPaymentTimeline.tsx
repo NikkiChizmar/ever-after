@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import type { PaymentTimelineEntry } from '@/features/vendors/api';
 
 const TODAY = new Date().toISOString().slice(0, 10);
+const TODAY_MONTH_KEY = TODAY.slice(0, 7);
 
 /** Parses a plain YYYY-MM-DD string as a local-midnight Date — same
  * approach as lib/format.ts's formatDate, so day math never drifts a day
@@ -15,14 +16,7 @@ function toLocalDate(date: string): Date {
   return new Date(year!, month! - 1, day!);
 }
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-const PX_PER_DAY = 2;
-const MIN_TRACK_WIDTH = 640;
-const LANE_HEIGHT = 28;
-const MARKER_GAP_PX = 34;
-const TOP_PAD = 24;
-const AXIS_TO_LABELS = 22;
-const TOOLTIP_ZONE = 168;
+const monthKeyOf = (date: string) => date.slice(0, 7);
 
 interface VendorTotal {
   committed: number;
@@ -49,20 +43,22 @@ interface TimelineEntry extends PaymentTimelineEntry {
   effectiveDate: string;
   isPaid: boolean;
   isOverdue: boolean;
-  x: number;
-  lane: number;
   remainingAfter: number;
 }
 
+interface MonthBucket {
+  key: string;
+  year: number;
+  label: string;
+  entries: TimelineEntry[];
+}
+
 /**
- * One chronological cash-flow line across every vendor — instead of
- * reading vendor by vendor, this answers "what's coming due, and when,
- * across the whole wedding." Every payment (paid or scheduled) is a dot
- * positioned by date on a horizontal axis; dots that fall close together
- * stack into their own lane so they stay clickable instead of merging
- * into a blob. Hover or click a dot for the full picture — vendor,
- * amount, date, status, and what's left on that vendor's contract after
- * this installment.
+ * A month-by-month overview of every vendor payment — paid and scheduled
+ * together, across the whole wedding. Each month is a compact chip (a dot
+ * and count if anything's due that month); click one to drop down the
+ * full list for that month underneath the grid. No horizontal scrolling
+ * required to see the shape of what's coming.
  */
 export function VendorPaymentTimeline({
   payments,
@@ -71,8 +67,10 @@ export function VendorPaymentTimeline({
   totalRemaining,
   vendorTotals,
 }: VendorPaymentTimelineProps) {
-  const [activeId, setActiveId] = useState<string | null>(null);
   const [showBreakdown, setShowBreakdown] = useState(false);
+  // undefined = "no explicit choice yet, use the default month";
+  // null = "explicitly collapsed"; string = "this month, explicitly".
+  const [manualMonthKey, setManualMonthKey] = useState<string | null | undefined>(undefined);
 
   const dated = payments
     .map((p) => ({ ...p, effectiveDate: p.paidDate ?? p.dueDate }))
@@ -108,70 +106,67 @@ export function VendorPaymentTimeline({
     }
   }
 
-  // Date scale: span from the earliest entry to the latest, stretched to
-  // include today so the "Today" marker always lands inside the track.
+  const entries: TimelineEntry[] = dated.map((p) => {
+    const isPaid = p.paidDate !== null;
+    const isOverdue = !isPaid && p.dueDate !== null && p.dueDate < TODAY;
+    return { ...p, isPaid, isOverdue, remainingAfter: remainingAfterById.get(p.id) ?? 0 };
+  });
+
+  // Every month from the earliest payment to the latest, including today's
+  // month, so the grid always covers "where am I now" — empty months are
+  // kept (as faded, non-interactive chips) to preserve the sense of a
+  // continuous timeline rather than jumping between active months.
   const today = toLocalDate(TODAY);
   let minDate = toLocalDate(dated[0]!.effectiveDate);
   let maxDate = toLocalDate(dated[dated.length - 1]!.effectiveDate);
   if (today < minDate) minDate = today;
   if (today > maxDate) maxDate = today;
-  const totalDays = Math.max(Math.round((maxDate.getTime() - minDate.getTime()) / DAY_MS), 1);
-  const trackWidth = Math.max(totalDays * PX_PER_DAY, MIN_TRACK_WIDTH);
-  const pxPerDay = trackWidth / totalDays;
-  const xForDate = (date: string) => ((toLocalDate(date).getTime() - minDate.getTime()) / DAY_MS) * pxPerDay;
 
-  // Lane assignment: walk the chronologically-sorted entries and give each
-  // one the lowest lane whose last-used x is far enough away — keeps
-  // clustered dates from overlapping without needing to measure the DOM.
-  const laneLastX: number[] = [];
-  const entries: TimelineEntry[] = dated.map((p) => {
-    const isPaid = p.paidDate !== null;
-    const isOverdue = !isPaid && p.dueDate !== null && p.dueDate < TODAY;
-    const x = xForDate(p.effectiveDate);
-    let lane = 0;
-    while (laneLastX[lane] !== undefined && x - laneLastX[lane]! < MARKER_GAP_PX) lane++;
-    laneLastX[lane] = x;
-    return {
-      ...p,
-      isPaid,
-      isOverdue,
-      x,
-      lane,
-      remainingAfter: remainingAfterById.get(p.id) ?? 0,
-    };
-  });
+  const entriesByMonth = new Map<string, TimelineEntry[]>();
+  for (const entry of entries) {
+    const key = monthKeyOf(entry.effectiveDate);
+    const group = entriesByMonth.get(key);
+    if (group) group.push(entry);
+    else entriesByMonth.set(key, [entry]);
+  }
 
-  const maxLane = Math.max(...entries.map((e) => e.lane));
-  const axisY = TOP_PAD + maxLane * LANE_HEIGHT;
-  const tooltipAnchorY = axisY + AXIS_TO_LABELS + 18;
-  const trackHeight = tooltipAnchorY + TOOLTIP_ZONE;
-  const todayX = xForDate(TODAY);
-
-  // Month tick marks along the axis, thinned out so labels never collide —
-  // greedily keep a tick only once we're at least 64px past the last kept one.
-  const monthTicks: { x: number; label: string }[] = [];
+  const months: MonthBucket[] = [];
   const cursor = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
-  let lastKeptX = -Infinity;
-  while (cursor <= maxDate) {
-    const x = ((cursor.getTime() - minDate.getTime()) / DAY_MS) * pxPerDay;
-    if (x - lastKeptX >= 64) {
-      monthTicks.push({
-        x,
-        label: new Intl.DateTimeFormat(undefined, { month: 'short', year: '2-digit' }).format(cursor),
-      });
-      lastKeptX = x;
-    }
+  const end = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+  while (cursor <= end) {
+    const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`;
+    months.push({
+      key,
+      year: cursor.getFullYear(),
+      label: new Intl.DateTimeFormat(undefined, { month: 'short' }).format(cursor),
+      entries: entriesByMonth.get(key) ?? [],
+    });
     cursor.setMonth(cursor.getMonth() + 1);
   }
 
+  const monthsByYear = new Map<number, MonthBucket[]>();
+  for (const month of months) {
+    const group = monthsByYear.get(month.year);
+    if (group) group.push(month);
+    else monthsByYear.set(month.year, [month]);
+  }
+
   const nextPayment = entries.find((e) => !e.isPaid);
+  const monthsWithPayments = months.filter((m) => m.entries.length > 0);
+  const defaultMonthKey = nextPayment
+    ? monthKeyOf(nextPayment.effectiveDate)
+    : (monthsWithPayments[monthsWithPayments.length - 1]?.key ?? null);
+  const effectiveMonthKey = manualMonthKey === undefined ? defaultMonthKey : manualMonthKey;
+  const selectedMonth = months.find((m) => m.key === effectiveMonthKey && m.entries.length > 0) ?? null;
+
+  const selectMonth = (key: string) => setManualMonthKey(effectiveMonthKey === key ? null : key);
 
   return (
     <div>
       {/* Summary bar */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="chart-well rounded-lg p-4">
-          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Paid so far</p>
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Total paid</p>
           <p className="font-display mt-1 text-2xl font-medium text-card-foreground">
             {formatMoney(totalPaid, currency)}
           </p>
@@ -183,7 +178,7 @@ export function VendorPaymentTimeline({
           className="chart-well rounded-lg p-4 text-left transition-colors hover:border-primary/40"
         >
           <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Remaining</p>
+            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Total remaining</p>
             <ChevronDownIcon
               className={cn('size-3.5 text-muted-foreground transition-transform', showBreakdown && 'rotate-180')}
             />
@@ -218,9 +213,9 @@ export function VendorPaymentTimeline({
         </div>
       </div>
 
-      {/* Per-vendor breakdown — the old layout, tucked behind "Remaining" for
-          when you want to see one vendor's schedule in isolation instead of
-          reading it off the shared timeline. */}
+      {/* Per-vendor breakdown — the old layout, tucked behind "Total remaining"
+          for when you want to see one vendor's schedule in isolation instead
+          of reading it off the month grid. */}
       {showBreakdown && (
         <div className="chart-well mt-4 rounded-lg p-4">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -297,132 +292,130 @@ export function VendorPaymentTimeline({
         </div>
       )}
 
-      {/* Timeline */}
-      <div className="chart-well mt-4 overflow-x-auto rounded-lg p-4">
-        <div className="relative" style={{ width: trackWidth, height: trackHeight, minWidth: '100%' }}>
-          {/* axis line */}
-          <div
-            aria-hidden="true"
-            className="absolute left-0 h-px bg-border"
-            style={{ top: axisY, width: trackWidth }}
-          />
+      {/* Month grid */}
+      <div className="chart-well mt-4 rounded-lg p-4">
+        {[...monthsByYear.entries()].map(([year, yearMonths]) => (
+          <div key={year} className="mb-4 last:mb-0">
+            <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">{year}</p>
+            <div className="flex flex-wrap gap-2">
+              {yearMonths.map((month) => {
+                const hasPayments = month.entries.length > 0;
+                const hasOverdue = month.entries.some((e) => e.isOverdue);
+                const hasUnpaid = month.entries.some((e) => !e.isPaid);
+                const isSelected = hasPayments && month.key === effectiveMonthKey;
+                const isCurrentMonth = month.key === TODAY_MONTH_KEY;
+                const statusColor = hasOverdue ? 'destructive' : hasUnpaid ? 'muted' : 'primary';
 
-          {/* today marker */}
-          <div
-            aria-hidden="true"
-            className="absolute top-0 w-px border-l border-dashed border-primary/50"
-            style={{ left: todayX, height: axisY }}
-          />
-          <span
-            className="absolute -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-widest text-primary"
-            style={{ left: todayX, top: 0 }}
-          >
-            Today
-          </span>
-
-          {/* month ticks */}
-          {monthTicks.map((tick) => (
-            <div key={tick.label + tick.x} className="absolute" style={{ left: tick.x, top: axisY }}>
-              <div className="h-1.5 w-px bg-border" />
-              <span className="absolute top-2 -translate-x-1/2 whitespace-nowrap text-[10px] text-muted-foreground">
-                {tick.label}
-              </span>
+                return (
+                  <button
+                    key={month.key}
+                    type="button"
+                    disabled={!hasPayments}
+                    onClick={() => selectMonth(month.key)}
+                    title={
+                      hasPayments
+                        ? `${month.entries.length} payment${month.entries.length === 1 ? '' : 's'} — ${new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(toLocalDate(`${month.key}-01`))}`
+                        : undefined
+                    }
+                    aria-expanded={isSelected}
+                    className={cn(
+                      'flex min-w-16 flex-col items-center gap-1 rounded-lg border px-3 py-2 transition-colors',
+                      hasPayments ? 'hover:border-primary/40' : 'cursor-default opacity-40',
+                      isSelected && 'border-primary bg-primary/5',
+                      isCurrentMonth && !isSelected && 'ring-1 ring-primary/40',
+                    )}
+                  >
+                    <span className="text-sm font-medium text-card-foreground">{month.label}</span>
+                    {hasPayments ? (
+                      <span
+                        className={cn(
+                          'flex items-center gap-1 text-xs font-medium',
+                          statusColor === 'destructive' && 'text-destructive',
+                          statusColor === 'muted' && 'text-muted-foreground',
+                          statusColor === 'primary' && 'text-primary',
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            'size-1.5 rounded-full',
+                            statusColor === 'destructive' && 'bg-destructive',
+                            statusColor === 'muted' && 'bg-muted-foreground/60',
+                            statusColor === 'primary' && 'bg-primary',
+                          )}
+                        />
+                        {month.entries.length}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground/40">—</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          ))}
+          </div>
+        ))}
 
-          {/* payment markers */}
-          {entries.map((entry) => {
-            const markerY = axisY - entry.lane * LANE_HEIGHT;
-            const isActive = activeId === entry.id;
-            // Clamp so the tooltip never runs off the left/right edge of the track.
-            const tooltipX = Math.min(Math.max(entry.x, 116), trackWidth - 116);
-
-            return (
-              <div key={entry.id}>
-                {entry.lane > 0 && (
-                  <div
-                    aria-hidden="true"
-                    className="absolute w-px bg-border"
-                    style={{ left: entry.x, top: markerY, height: entry.lane * LANE_HEIGHT }}
-                  />
-                )}
-                <button
-                  type="button"
-                  className={cn(
-                    'absolute z-10 flex size-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 bg-card transition-transform',
-                    entry.isPaid && 'border-primary bg-primary',
-                    entry.isOverdue && 'border-destructive',
-                    isActive && 'scale-125',
-                  )}
-                  style={{ left: entry.x, top: markerY }}
-                  onMouseEnter={() => setActiveId(entry.id)}
-                  onMouseLeave={() => setActiveId((prev) => (prev === entry.id ? null : prev))}
-                  onClick={() => setActiveId((prev) => (prev === entry.id ? null : entry.id))}
-                  aria-label={`${entry.vendorName}: ${entry.label}, ${formatMoney(entry.amount, currency)}, ${
-                    entry.isPaid ? 'paid' : 'upcoming'
-                  }`}
+        {/* Selected month's detail list */}
+        {selectedMonth ? (
+          <div className="mt-2 border-t pt-4">
+            <p className="mb-3 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+              {new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(
+                toLocalDate(`${selectedMonth.key}-01`),
+              )}
+            </p>
+            <div className="space-y-2">
+              {selectedMonth.entries.map((entry) => (
+                <div
+                  key={entry.id}
+                  className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-lg border p-3"
                 >
-                  {entry.isPaid && <CheckIcon className="size-2.5 text-primary-foreground" />}
-                </button>
-
-                {isActive && (
-                  <>
-                    <div
-                      aria-hidden="true"
-                      className="absolute w-px border-l border-dashed border-border"
-                      style={{ left: entry.x, top: axisY, height: tooltipAnchorY - axisY }}
-                    />
-                    <div
-                      className="chart-tooltip absolute z-20 w-56 -translate-x-1/2"
-                      style={{ left: tooltipX, top: tooltipAnchorY }}
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span
+                      className={cn(
+                        'flex size-4 shrink-0 items-center justify-center rounded-full border-2 bg-card',
+                        entry.isPaid && 'border-primary bg-primary',
+                        entry.isOverdue && 'border-destructive',
+                      )}
                     >
-                      <p className="font-medium text-card-foreground">{entry.vendorName}</p>
-                      <p className="text-muted-foreground">{entry.label}</p>
-                      <div className="mt-2 space-y-1">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-muted-foreground">
-                            {entry.isPaid ? 'Paid' : entry.isOverdue ? 'Overdue since' : 'Due'}
-                          </span>
-                          <span
-                            className={cn('font-medium text-card-foreground', entry.isOverdue && 'text-destructive')}
-                          >
-                            {formatDate(entry.effectiveDate)}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-muted-foreground">Amount</span>
-                          <span className="font-medium text-card-foreground">
-                            {formatMoney(entry.amount, currency)}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-muted-foreground">Balance after</span>
-                          <span className="font-medium text-card-foreground">
-                            {formatMoney(entry.remainingAfter, currency)}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-muted-foreground">Status</span>
-                          <span
-                            className={cn(
-                              'font-medium',
-                              entry.isPaid ? 'text-primary' : entry.isOverdue ? 'text-destructive' : 'text-card-foreground',
-                            )}
-                          >
-                            {entry.isPaid ? 'Paid' : entry.isOverdue ? 'Upcoming (overdue)' : 'Upcoming'}
-                          </span>
-                        </div>
-                      </div>
+                      {entry.isPaid && <CheckIcon className="size-2.5 text-primary-foreground" />}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-card-foreground">{entry.vendorName}</p>
+                      <p
+                        className={cn(
+                          'truncate text-xs text-muted-foreground',
+                          entry.isOverdue && 'font-medium text-destructive',
+                        )}
+                      >
+                        {entry.label} ·{' '}
+                        {entry.isPaid
+                          ? `Paid ${formatDate(entry.effectiveDate)}`
+                          : entry.isOverdue
+                            ? `Overdue since ${formatDate(entry.effectiveDate)}`
+                            : `Due ${formatDate(entry.effectiveDate)}`}
+                      </p>
                     </div>
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-display text-sm font-medium text-card-foreground">
+                      {formatMoney(entry.amount, currency)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatMoney(entry.remainingAfter, currency)} left after
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p className="mt-2 border-t pt-4 text-sm text-muted-foreground">
+            Click a month above to see its payments.
+          </p>
+        )}
       </div>
 
-      <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+      <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <span className="flex size-3 items-center justify-center rounded-full border-2 border-primary bg-primary">
             <CheckIcon className="size-2 text-primary-foreground" />
@@ -437,7 +430,6 @@ export function VendorPaymentTimeline({
           <span className="size-3 rounded-full border-2 border-destructive bg-card" />
           Overdue
         </span>
-        <span className="hidden sm:inline">Hover or tap a marker for details · scroll to see the full timeline</span>
       </div>
     </div>
   );
