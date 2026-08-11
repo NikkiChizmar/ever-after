@@ -120,7 +120,7 @@ export default function AwaitingTasksPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="mt-4 grid items-start gap-4 sm:grid-cols-2">
+        <div className="mt-6 grid items-start gap-6 sm:grid-cols-2">
           {GROUP_ORDER.map((category) => {
             const group = tasks.filter((t) => t.category === category);
             if (group.length === 0) return null;
@@ -132,9 +132,9 @@ export default function AwaitingTasksPage() {
             const groupKey = category ?? 'general';
             const isExpanded = expandedCompleted.has(groupKey);
             return (
-              <Card key={groupKey}>
-                <CardHeader>
-                  <CardTitle className="text-base font-medium">{groupLabel(category)}</CardTitle>
+              <Card key={groupKey} className="glass-surface-lg rounded-2xl">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-semibold">{groupLabel(category)}</CardTitle>
                 </CardHeader>
                 <CardContent className="divide-y border-t p-0">
                   {awaitingInGroup.map(renderTask)}

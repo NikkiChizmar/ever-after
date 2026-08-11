@@ -370,6 +370,18 @@
     padding: 8px 12px;
     font-size: 0.875rem;
   }
+
+  /* A deeper-glow variant of .glass-surface for card grids meant to read
+   * as a gallery of individual "spots" rather than plain utilitarian
+   * containers (e.g. Awaiting Tasks' per-category cards) — same glass
+   * token system, just pulled up a size on the shadow scale so the cards
+   * feel closer to the finance dashboard's achievement-card treatment. */
+  .glass-surface-lg {
+    box-shadow: var(--shadow-lg), var(--inset-highlight);
+  }
+  .glass-surface-lg:hover {
+    box-shadow: var(--shadow-xl), var(--inset-highlight);
+  }
 }
 
 /*
