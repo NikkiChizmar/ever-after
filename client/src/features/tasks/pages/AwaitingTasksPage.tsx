@@ -99,7 +99,6 @@ export default function AwaitingTasksPage() {
         <div className="mt-6 space-y-6">
           {GROUP_ORDER.map((category) => {
             const group = tasks.filter((t) => t.category === category);
-            if (group.length === 0) return null;
             // Completed tasks stay grouped under their own "Completed" label —
             // just nested inside this category's section instead of pulled
             // out into one page-wide list.
@@ -113,26 +112,51 @@ export default function AwaitingTasksPage() {
                   <CardTitle className="text-lg font-semibold">{groupLabel(category)}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {awaitingInGroup.length > 0 && (
-                    <div className={CARD_GRID}>{awaitingInGroup.map(renderTaskCard)}</div>
-                  )}
-                  {completedInGroup.length > 0 && (
-                    <div className={cn(awaitingInGroup.length > 0 && 'mt-5')}>
-                      <button
-                        type="button"
-                        onClick={() => toggleCompleted(groupKey)}
-                        aria-expanded={isExpanded}
-                        className="flex w-full items-center justify-between gap-2 rounded-lg bg-muted/40 px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
-                      >
-                        <span>
-                          Completed <span className="text-muted-foreground/70">({completedInGroup.length})</span>
-                        </span>
-                        <ChevronDownIcon
-                          className={cn('size-3.5 transition-transform', isExpanded && 'rotate-180')}
-                        />
-                      </button>
-                      {isExpanded && <div className={cn(CARD_GRID, 'mt-3')}>{completedInGroup.map(renderTaskCard)}</div>}
+                  {group.length === 0 ? (
+                    <div className="mini-card flex flex-col items-center gap-2 border-dashed py-8 text-center">
+                      <p className="text-sm text-muted-foreground">Nothing here yet.</p>
+                      <AddTaskDialog
+                        weddingId={weddingId!}
+                        vendors={vendors ?? []}
+                        defaultCategory={category ?? undefined}
+                        trigger={
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={DEMO_MODE}
+                            title={DEMO_MODE ? 'Read-only demo' : undefined}
+                          >
+                            <PlusIcon /> Add task
+                          </Button>
+                        }
+                      />
                     </div>
+                  ) : (
+                    <>
+                      {awaitingInGroup.length > 0 && (
+                        <div className={CARD_GRID}>{awaitingInGroup.map(renderTaskCard)}</div>
+                      )}
+                      {completedInGroup.length > 0 && (
+                        <div className={cn(awaitingInGroup.length > 0 && 'mt-5')}>
+                          <button
+                            type="button"
+                            onClick={() => toggleCompleted(groupKey)}
+                            aria-expanded={isExpanded}
+                            className="flex w-full items-center justify-between gap-2 rounded-lg bg-muted/40 px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
+                          >
+                            <span>
+                              Completed <span className="text-muted-foreground/70">({completedInGroup.length})</span>
+                            </span>
+                            <ChevronDownIcon
+                              className={cn('size-3.5 transition-transform', isExpanded && 'rotate-180')}
+                            />
+                          </button>
+                          {isExpanded && (
+                            <div className={cn(CARD_GRID, 'mt-3')}>{completedInGroup.map(renderTaskCard)}</div>
+                          )}
+                        </div>
+                      )}
+                    </>
                   )}
                 </CardContent>
               </Card>

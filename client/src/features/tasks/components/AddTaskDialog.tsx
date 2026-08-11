@@ -22,10 +22,15 @@ export function AddTaskDialog({
   weddingId,
   vendors,
   trigger,
+  defaultCategory,
 }: {
   weddingId: string;
   vendors: Vendor[];
   trigger: ReactNode;
+  /** Pre-selects the event/category — used when "Add task" is opened from
+   * a specific category's (possibly still-empty) card, so it doesn't have
+   * to be picked again. */
+  defaultCategory?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
@@ -33,7 +38,7 @@ export function AddTaskDialog({
   const [assigneeMemberId, setAssigneeMemberId] = useState('unassigned');
   const [assigneeLabel, setAssigneeLabel] = useState('');
   const [vendorId, setVendorId] = useState('none');
-  const [category, setCategory] = useState('none');
+  const [category, setCategory] = useState(defaultCategory ?? 'none');
   const { data: members } = useMembers(weddingId);
   const createTask = useCreateTask(weddingId);
   // Only vendors actually chosen, not everyone still being considered or
@@ -47,7 +52,7 @@ export function AddTaskDialog({
     setAssigneeMemberId('unassigned');
     setAssigneeLabel('');
     setVendorId('none');
-    setCategory('none');
+    setCategory(defaultCategory ?? 'none');
   }
 
   function handleSubmit(event: FormEvent) {
