@@ -310,7 +310,7 @@ final headcount with caterer."
 **Key fields:** `wedding_id`, `title`, `description`, `status` ∈ `todo |
 in_progress | done`, `due_date` (nullable), `assignee_member_id` (nullable FK →
 `wedding_members`), `assignee_label` (nullable text — "Mom", "Best man", "Florist"),
-`vendor_id` (nullable FK), `category` (nullable text).
+`vendor_id` (nullable FK), `category` (nullable text), `section` (nullable text).
 
 **Decisions & edge cases:** assignment is the interesting problem — tasks go to
 the couple, family, wedding party, or vendors, and most of those people will never
@@ -319,6 +319,11 @@ assignee is a real collaborator (notifications and "my tasks" views work), free
 text when they're not (a CHECK prevents both being set). If assigned humans later
 need real tracking, a lightweight `people` concept can absorb the labels.
 `vendor_id` links vendor-related tasks so a vendor page can show its open items.
+`category` is the fixed, top-level event a task belongs to (see `TASK_CATEGORIES`
+on the client); `section` is a second, free-text grouping *within* a category —
+"Reception tables," "Cookie table," "Guest book table" — for events big enough
+to have their own sub-areas. Free text rather than a fixed list for the same
+reason as `events.name`: the areas are invented per-wedding, not a known set.
 Checklist templates ("12 months out you should…") are Phase 2 — they're content,
 not schema.
 

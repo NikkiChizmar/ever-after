@@ -20,6 +20,7 @@ const createTaskSchema = z.object({
   assigneeLabel: z.string().trim().min(1).max(100).nullable().optional(),
   vendorId: z.string().uuid().nullable().optional(),
   category: z.string().trim().max(100).optional(),
+  section: z.string().trim().max(100).optional(),
 });
 
 export async function createTask(req: Request, res: Response) {
@@ -42,6 +43,7 @@ const updateTaskSchema = z.object({
   assigneeLabel: z.string().trim().min(1).max(100).nullable().optional(),
   vendorId: z.string().uuid().nullable().optional(),
   category: z.string().trim().max(100).nullable().optional(),
+  section: z.string().trim().max(100).nullable().optional(),
 });
 
 export async function updateTask(req: Request, res: Response) {

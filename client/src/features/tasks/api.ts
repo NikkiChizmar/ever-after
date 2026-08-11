@@ -13,6 +13,10 @@ export interface Task {
   assigneeLabel: string | null;
   vendorId: string | null;
   category: string | null;
+  // Free-text sub-area within a category — "Reception tables," "Cookie
+  // table," "Guest book table." Not tied to any fixed list, since the
+  // areas are invented per-wedding.
+  section: string | null;
   createdAt: string;
 }
 
@@ -25,6 +29,7 @@ export interface CreateTaskInput {
   assigneeLabel?: string | null;
   vendorId?: string | null;
   category?: string;
+  section?: string;
 }
 
 export interface UpdateTaskInput {
@@ -36,6 +41,7 @@ export interface UpdateTaskInput {
   assigneeLabel?: string | null;
   vendorId?: string | null;
   category?: string | null;
+  section?: string | null;
 }
 
 export const taskApi = {

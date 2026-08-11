@@ -26,6 +26,27 @@ const groupLabel = (category: string | null) => category ?? 'General';
 // of running into long vertical lists.
 const CARD_GRID = 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3';
 
+// Second-level, free-text grouping within a category — "Reception" might
+// split into "Reception tables," "Cookie table," "Guest book table."
+// Tasks with no section picked stay in one flat grid up top; tasks that
+// share a section get pulled into their own labeled sub-group below it,
+// sorted alphabetically so the layout doesn't reshuffle as tasks change.
+function groupBySection(items: Task[]) {
+  const ungrouped: Task[] = [];
+  const bySection = new Map<string, Task[]>();
+  for (const task of items) {
+    if (!task.section) {
+      ungrouped.push(task);
+      continue;
+    }
+    const list = bySection.get(task.section) ?? [];
+    list.push(task);
+    bySection.set(task.section, list);
+  }
+  const sections = [...bySection.entries()].sort(([a], [b]) => a.localeCompare(b));
+  return { ungrouped, sections };
+}
+
 export default function AwaitingTasksPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
   const { data: weddingData } = useWedding(weddingId!);
@@ -109,6 +130,8 @@ export default function AwaitingTasksPage() {
             // out into one page-wide list.
             const awaitingInGroup = group.filter((t) => t.status !== 'done');
             const completedInGroup = group.filter((t) => t.status === 'done');
+            const { ungrouped: awaitingUngrouped, sections: awaitingSections } =
+              groupBySection(awaitingInGroup);
             const groupKey = category ?? 'general';
             const isExpanded = expandedCompleted.has(groupKey);
             return (
@@ -138,9 +161,23 @@ export default function AwaitingTasksPage() {
                     </div>
                   ) : (
                     <>
-                      {awaitingInGroup.length > 0 && (
-                        <div className={CARD_GRID}>{awaitingInGroup.map(renderTaskCard)}</div>
+                      {awaitingUngrouped.length > 0 && (
+                        <div className={cn(CARD_GRID, awaitingSections.length > 0 && 'mb-5')}>
+                          {awaitingUngrouped.map(renderTaskCard)}
+                        </div>
                       )}
+                      {awaitingSections.map(([name, items], index) => (
+                        <div key={name} className={cn(index > 0 && 'mt-5')}>
+                          <h4 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            <span className="size-1.5 rounded-full bg-primary/50" />
+                            {name}
+                            <span className="font-normal normal-case text-muted-foreground/70">
+                              ({items.length})
+                            </span>
+                          </h4>
+                          <div className={CARD_GRID}>{items.map(renderTaskCard)}</div>
+                        </div>
+                      ))}
                       {completedInGroup.length > 0 && (
                         <div className={cn(awaitingInGroup.length > 0 && 'mt-5')}>
                           <button

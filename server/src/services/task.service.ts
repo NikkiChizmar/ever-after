@@ -14,6 +14,7 @@ export interface Task {
   assigneeLabel: string | null;
   vendorId: string | null;
   category: string | null;
+  section: string | null;
   createdAt: string;
 }
 
@@ -21,7 +22,7 @@ const TASK_COLUMNS = `
   id, wedding_id AS "weddingId", title, description, status,
   due_date AS "dueDate",
   assignee_member_id AS "assigneeMemberId", assignee_label AS "assigneeLabel",
-  vendor_id AS "vendorId", category,
+  vendor_id AS "vendorId", category, section,
   created_at AS "createdAt"
 `;
 
@@ -43,6 +44,7 @@ interface CreateTaskInput {
   assigneeLabel?: string | null;
   vendorId?: string | null;
   category?: string;
+  section?: string;
 }
 
 export async function createTask(weddingId: string, input: CreateTaskInput): Promise<Task> {
@@ -53,8 +55,8 @@ export async function createTask(weddingId: string, input: CreateTaskInput): Pro
   const rows = await query<Task>(
     `INSERT INTO tasks (
        wedding_id, title, description, status, due_date,
-       assignee_member_id, assignee_label, vendor_id, category
-     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       assignee_member_id, assignee_label, vendor_id, category, section
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
      RETURNING ${TASK_COLUMNS}`,
     [
       weddingId,
@@ -66,6 +68,7 @@ export async function createTask(weddingId: string, input: CreateTaskInput): Pro
       input.assigneeLabel ?? null,
       input.vendorId ?? null,
       input.category ?? null,
+      input.section ?? null,
     ],
   );
   return rows[0]!;
@@ -92,6 +95,7 @@ interface UpdateTaskInput {
   assigneeLabel?: string | null;
   vendorId?: string | null;
   category?: string | null;
+  section?: string | null;
 }
 
 export async function updateTask(
@@ -126,6 +130,7 @@ export async function updateTask(
     assigneeLabel: 'assignee_label',
     vendorId: 'vendor_id',
     category: 'category',
+    section: 'section',
   };
   const sets: string[] = [];
   const params: unknown[] = [taskId];

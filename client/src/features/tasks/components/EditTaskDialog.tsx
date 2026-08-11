@@ -43,6 +43,7 @@ export function EditTaskDialog({
   const [assigneeLabel, setAssigneeLabel] = useState(task.assigneeLabel ?? '');
   const [vendorId, setVendorId] = useState(task.vendorId ?? 'none');
   const [category, setCategory] = useState(task.category ?? 'none');
+  const [section, setSection] = useState(task.section ?? '');
   const { data: members } = useMembers(weddingId);
   const updateTask = useUpdateTask(weddingId);
   const bookedVendors = vendors.filter((vendor) => vendor.status === 'booked');
@@ -57,6 +58,7 @@ export function EditTaskDialog({
       setAssigneeLabel(task.assigneeLabel ?? '');
       setVendorId(task.vendorId ?? 'none');
       setCategory(task.category ?? 'none');
+      setSection(task.section ?? '');
     }
     setOpen(next);
   }
@@ -73,6 +75,7 @@ export function EditTaskDialog({
           assigneeLabel: assigneeMemberId === 'unassigned' && assigneeLabel ? assigneeLabel : null,
           vendorId: vendorId === 'none' ? null : vendorId,
           category: category === 'none' ? null : category,
+          section: section.trim() || null,
         },
       },
       { onSuccess: () => setOpen(false) },
@@ -144,6 +147,15 @@ export function EditTaskDialog({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="editTaskSection">Section (optional)</Label>
+            <Input
+              id="editTaskSection"
+              placeholder="Reception tables, cookie table, guest book table…"
+              value={section}
+              onChange={(e) => setSection(e.target.value)}
+            />
           </div>
           {bookedVendors.length > 0 && (
             <div className="space-y-2">

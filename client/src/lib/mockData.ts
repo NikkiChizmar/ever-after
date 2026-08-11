@@ -410,6 +410,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Priya',
     vendorId: null,
     category: 'Bridesmaids proposal',
+    section: null,
     createdAt: '2026-01-08T00:00:00.000Z',
   },
   {
@@ -423,6 +424,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: null,
     vendorId: null,
     category: 'Bachelorette',
+    section: null,
     createdAt: '2026-03-26T00:00:00.000Z',
   },
   {
@@ -436,6 +438,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Sam',
     vendorId: null,
     category: 'Bridal shower',
+    section: null,
     createdAt: '2026-03-28T00:00:00.000Z',
   },
   {
@@ -449,6 +452,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Priya',
     vendorId: null,
     category: null,
+    section: null,
     createdAt: '2026-01-10T00:00:00.000Z',
   },
   {
@@ -462,6 +466,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Sam',
     vendorId: null,
     category: null,
+    section: null,
     createdAt: '2026-01-15T00:00:00.000Z',
   },
   {
@@ -475,6 +480,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Priya',
     vendorId: 'vendor-saffron',
     category: 'Reception',
+    section: null,
     createdAt: '2026-03-01T00:00:00.000Z',
   },
   {
@@ -488,6 +494,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Priya',
     vendorId: null,
     category: null,
+    section: null,
     createdAt: '2026-03-05T00:00:00.000Z',
   },
   {
@@ -501,6 +508,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Priya',
     vendorId: 'vendor-bloom-brush',
     category: null,
+    section: null,
     createdAt: '2026-03-10T00:00:00.000Z',
   },
   {
@@ -514,7 +522,36 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Sam',
     vendorId: null,
     category: 'Reception',
+    section: 'Reception tables',
     createdAt: '2026-03-12T00:00:00.000Z',
+  },
+  {
+    id: 'task-cookie-table-order',
+    weddingId: DEMO_WEDDING_ID,
+    title: 'Order cookies for the cookie table',
+    description: null,
+    status: 'todo',
+    dueDate: daysFromNow(25),
+    assigneeMemberId: null,
+    assigneeLabel: null,
+    vendorId: null,
+    category: 'Reception',
+    section: 'Cookie table',
+    createdAt: '2026-03-13T00:00:00.000Z',
+  },
+  {
+    id: 'task-guest-book-order',
+    weddingId: DEMO_WEDDING_ID,
+    title: 'Order guest book and pen',
+    description: null,
+    status: 'todo',
+    dueDate: daysFromNow(45),
+    assigneeMemberId: null,
+    assigneeLabel: 'Sam',
+    vendorId: null,
+    category: 'Reception',
+    section: 'Guest book table',
+    createdAt: '2026-03-13T12:00:00.000Z',
   },
   {
     id: 'task-wedding-bands',
@@ -527,6 +564,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: null,
     vendorId: null,
     category: 'Ceremony',
+    section: null,
     createdAt: '2026-03-14T00:00:00.000Z',
   },
   {
@@ -540,6 +578,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Priya',
     vendorId: null,
     category: null,
+    section: null,
     createdAt: '2026-03-16T00:00:00.000Z',
   },
   {
@@ -553,6 +592,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: null,
     vendorId: null,
     category: 'Ceremony',
+    section: null,
     createdAt: '2026-03-18T00:00:00.000Z',
   },
   {
@@ -566,6 +606,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: null,
     vendorId: 'vendor-willowmere',
     category: 'Miscellaneous',
+    section: null,
     createdAt: '2026-03-20T00:00:00.000Z',
   },
   {
@@ -579,6 +620,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: 'Sam',
     vendorId: null,
     category: 'Welcome party',
+    section: null,
     createdAt: '2026-03-22T00:00:00.000Z',
   },
   {
@@ -592,6 +634,7 @@ export const DEMO_TASKS: Task[] = [
     assigneeLabel: null,
     vendorId: null,
     category: 'Cocktail hour',
+    section: null,
     createdAt: '2026-03-24T00:00:00.000Z',
   },
 ];

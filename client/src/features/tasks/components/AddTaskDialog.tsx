@@ -39,6 +39,7 @@ export function AddTaskDialog({
   const [assigneeLabel, setAssigneeLabel] = useState('');
   const [vendorId, setVendorId] = useState('none');
   const [category, setCategory] = useState(defaultCategory ?? 'none');
+  const [section, setSection] = useState('');
   const { data: members } = useMembers(weddingId);
   const createTask = useCreateTask(weddingId);
   // Only vendors actually chosen, not everyone still being considered or
@@ -53,6 +54,7 @@ export function AddTaskDialog({
     setAssigneeLabel('');
     setVendorId('none');
     setCategory(defaultCategory ?? 'none');
+    setSection('');
   }
 
   function handleSubmit(event: FormEvent) {
@@ -67,6 +69,7 @@ export function AddTaskDialog({
         assigneeLabel: assigneeMemberId === 'unassigned' && assigneeLabel ? assigneeLabel : undefined,
         vendorId: vendorId === 'none' ? undefined : vendorId,
         category: category === 'none' ? undefined : category,
+        section: section.trim() || undefined,
       },
       { onSuccess: () => { setOpen(false); reset(); } },
     );
@@ -138,6 +141,15 @@ export function AddTaskDialog({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="taskSection">Section (optional)</Label>
+            <Input
+              id="taskSection"
+              placeholder="Reception tables, cookie table, guest book table…"
+              value={section}
+              onChange={(e) => setSection(e.target.value)}
+            />
           </div>
           {bookedVendors.length > 0 && (
             <div className="space-y-2">
