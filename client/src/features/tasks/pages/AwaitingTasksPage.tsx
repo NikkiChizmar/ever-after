@@ -1,4 +1,5 @@
-import { PlusIcon, Trash2Icon } from 'lucide-react';
+import { ChevronDownIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,16 @@ export default function AwaitingTasksPage() {
   const { data: vendors } = useVendors(weddingId!);
   const { data: members } = useMembers(weddingId!);
   const deleteTask = useDeleteTask(weddingId!);
+  // Collapsed by default in every category — completed tasks are still
+  // there to review, just not eating up space until asked for.
+  const [expandedCompleted, setExpandedCompleted] = useState<Set<string>>(new Set());
+  const toggleCompleted = (key: string) =>
+    setExpandedCompleted((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
 
   if (isPending || !weddingData) {
     return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
@@ -117,17 +128,29 @@ export default function AwaitingTasksPage() {
           // out into one page-wide list.
           const awaitingInGroup = group.filter((t) => t.status !== 'done');
           const completedInGroup = group.filter((t) => t.status === 'done');
+          const groupKey = category ?? 'general';
+          const isExpanded = expandedCompleted.has(groupKey);
           return (
-            <div key={category ?? 'general'} className="mt-6 first:mt-4">
+            <div key={groupKey} className="mt-6 first:mt-4">
               <h3 className="text-sm font-medium text-foreground/70">{groupLabel(category)}</h3>
               <div className="mt-2 divide-y overflow-hidden rounded-xl border bg-card text-card-foreground">
                 {awaitingInGroup.map(renderTask)}
                 {completedInGroup.length > 0 && (
                   <>
-                    <div className="bg-muted/40 px-5 py-1.5 text-xs font-medium text-muted-foreground">
-                      Completed
-                    </div>
-                    {completedInGroup.map(renderTask)}
+                    <button
+                      type="button"
+                      onClick={() => toggleCompleted(groupKey)}
+                      aria-expanded={isExpanded}
+                      className="flex w-full items-center justify-between gap-2 bg-muted/40 px-5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
+                    >
+                      <span>
+                        Completed <span className="text-muted-foreground/70">({completedInGroup.length})</span>
+                      </span>
+                      <ChevronDownIcon
+                        className={cn('size-3.5 transition-transform', isExpanded && 'rotate-180')}
+                      />
+                    </button>
+                    {isExpanded && completedInGroup.map(renderTask)}
                   </>
                 )}
               </div>
