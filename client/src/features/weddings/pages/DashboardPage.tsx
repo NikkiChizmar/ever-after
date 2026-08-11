@@ -127,15 +127,7 @@ export default function DashboardPage() {
       {summary && (
         <>
           <h2 className="font-display mt-14 text-lg font-medium">Budget</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-4">
-            <Card>
-              <CardHeader>
-                <CardDescription>Planned</CardDescription>
-                <CardTitle className="font-display text-xl font-medium">
-                  {money(summary.totals.plannedAmount)}
-                </CardTitle>
-              </CardHeader>
-            </Card>
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <Card>
               <CardHeader>
                 <CardDescription>Committed</CardDescription>
