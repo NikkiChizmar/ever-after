@@ -96,7 +96,7 @@ export default function VendorsPage() {
           <Card className="sm:col-span-2">
             <CardHeader>
               <CardTitle className="text-base font-medium">Payment timeline</CardTitle>
-              <CardDescription>Paid and upcoming payments, broken out by vendor.</CardDescription>
+              <CardDescription>Every vendor payment, plotted chronologically — your wedding cash flow at a glance.</CardDescription>
             </CardHeader>
             <CardContent>
               <VendorPaymentTimeline
