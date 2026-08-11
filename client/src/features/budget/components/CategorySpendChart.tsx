@@ -109,6 +109,10 @@ export function CategorySpendChart({ summary, currency }: CategorySpendChartProp
               </span>
             </div>
           ))}
+        <div className="flex items-center justify-between gap-3 border-t border-border/60 pt-2 text-sm font-medium text-card-foreground">
+          <span>Total</span>
+          <span>{formatMoney(total, currency)}</span>
+        </div>
       </div>
     </div>
   );
