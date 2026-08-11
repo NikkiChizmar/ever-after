@@ -23,6 +23,7 @@ export function AddTaskDialog({
   vendors,
   trigger,
   defaultCategory,
+  defaultSection,
 }: {
   weddingId: string;
   vendors: Vendor[];
@@ -31,6 +32,9 @@ export function AddTaskDialog({
    * a specific category's (possibly still-empty) card, so it doesn't have
    * to be picked again. */
   defaultCategory?: string;
+  /** Pre-fills the section — used when "Add task" is opened from inside a
+   * specific sub-group (e.g. "Cookie table" under Reception). */
+  defaultSection?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
@@ -39,7 +43,7 @@ export function AddTaskDialog({
   const [assigneeLabel, setAssigneeLabel] = useState('');
   const [vendorId, setVendorId] = useState('none');
   const [category, setCategory] = useState(defaultCategory ?? 'none');
-  const [section, setSection] = useState('');
+  const [section, setSection] = useState(defaultSection ?? '');
   const { data: members } = useMembers(weddingId);
   const createTask = useCreateTask(weddingId);
   // Only vendors actually chosen, not everyone still being considered or
@@ -54,7 +58,7 @@ export function AddTaskDialog({
     setAssigneeLabel('');
     setVendorId('none');
     setCategory(defaultCategory ?? 'none');
-    setSection('');
+    setSection(defaultSection ?? '');
   }
 
   function handleSubmit(event: FormEvent) {

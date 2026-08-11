@@ -13,6 +13,7 @@ import { TaskCard } from '../components/TaskCard';
 import { TASK_CATEGORIES } from '../constants';
 import { useDeleteTask, useTasks } from '../hooks';
 import type { Task } from '../api';
+import type { Vendor } from '@/features/vendors/api';
 
 // null (no category picked) groups first as "General" — the everyday
 // planning tasks ("Mail invitations") that aren't tied to a specific
@@ -45,6 +46,42 @@ function groupBySection(items: Task[]) {
   }
   const sections = [...bySection.entries()].sort(([a], [b]) => a.localeCompare(b));
   return { ungrouped, sections };
+}
+
+// A dashed, same-size-as-a-card tile at the end of a grid — pre-fills
+// whatever category/section that grid belongs to, so adding another task
+// to "Cookie table" doesn't mean re-picking Reception and typing the
+// section name again.
+function AddTaskTile({
+  weddingId,
+  vendors,
+  category,
+  section,
+}: {
+  weddingId: string;
+  vendors: Vendor[];
+  category?: string;
+  section?: string;
+}) {
+  return (
+    <AddTaskDialog
+      weddingId={weddingId}
+      vendors={vendors}
+      defaultCategory={category}
+      defaultSection={section}
+      trigger={
+        <button
+          type="button"
+          disabled={DEMO_MODE}
+          title={DEMO_MODE ? 'Read-only demo' : 'Add task'}
+          className="flex h-full min-h-[104px] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-border/60 text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <PlusIcon className="size-4" />
+          <span className="text-xs font-medium">Add task</span>
+        </button>
+      }
+    />
+  );
 }
 
 export default function AwaitingTasksPage() {
@@ -164,6 +201,11 @@ export default function AwaitingTasksPage() {
                       {awaitingUngrouped.length > 0 && (
                         <div className={cn(CARD_GRID, awaitingSections.length > 0 && 'mb-5')}>
                           {awaitingUngrouped.map(renderTaskCard)}
+                          <AddTaskTile
+                            weddingId={weddingId!}
+                            vendors={vendors ?? []}
+                            category={category ?? undefined}
+                          />
                         </div>
                       )}
                       {awaitingSections.map(([name, items], index) => (
@@ -175,7 +217,15 @@ export default function AwaitingTasksPage() {
                               ({items.length})
                             </span>
                           </h4>
-                          <div className={CARD_GRID}>{items.map(renderTaskCard)}</div>
+                          <div className={CARD_GRID}>
+                            {items.map(renderTaskCard)}
+                            <AddTaskTile
+                              weddingId={weddingId!}
+                              vendors={vendors ?? []}
+                              category={category ?? undefined}
+                              section={name}
+                            />
+                          </div>
                         </div>
                       ))}
                       {completedInGroup.length > 0 && (
