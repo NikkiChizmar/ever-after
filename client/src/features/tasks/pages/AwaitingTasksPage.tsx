@@ -1,4 +1,4 @@
-import { ChevronDownIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { ChevronDownIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -7,15 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useVendors } from '@/features/vendors/hooks';
 import { useMembers, useWedding } from '@/features/weddings/hooks';
 import { DEMO_MODE } from '@/lib/demo';
-import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { AddTaskDialog } from '../components/AddTaskDialog';
-import { TaskStatusSelect } from '../components/TaskStatusSelect';
+import { TaskCard } from '../components/TaskCard';
 import { TASK_CATEGORIES } from '../constants';
 import { useDeleteTask, useTasks } from '../hooks';
 import type { Task } from '../api';
-
-const TODAY = new Date().toISOString().slice(0, 10);
 
 // null (no category picked) groups first as "General" — the everyday
 // planning tasks ("Mail invitations") that aren't tied to a specific
@@ -23,6 +20,11 @@ const TODAY = new Date().toISOString().slice(0, 10);
 // then the wedding day itself, then a catch-all).
 const GROUP_ORDER: (string | null)[] = [null, ...TASK_CATEGORIES];
 const groupLabel = (category: string | null) => category ?? 'General';
+
+// Same responsive grid used for both the awaiting and completed sections
+// of every category, so the whole page wraps cards consistently instead
+// of running into long vertical lists.
+const CARD_GRID = 'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3';
 
 export default function AwaitingTasksPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
@@ -56,48 +58,22 @@ export default function AwaitingTasksPage() {
   const vendorName = (vendorId: string | null) => vendors?.find((v) => v.id === vendorId)?.name;
   const memberName = (memberId: string | null) => members?.find((m) => m.id === memberId)?.fullName;
 
-  function renderTask(task: Task) {
-    const assignee = task.assigneeLabel ?? memberName(task.assigneeMemberId);
-    const overdue = task.dueDate && task.dueDate < TODAY && task.status !== 'done';
+  function renderTaskCard(task: Task) {
     return (
-      <div
+      <TaskCard
         key={task.id}
-        className="flex items-center justify-between gap-4 px-5 py-4 animate-in fade-in-0 slide-in-from-top-1 duration-300"
-      >
-        <div>
-          <p className={cn('text-sm font-medium', task.status === 'done' && 'text-foreground/60 line-through')}>
-            {task.title}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {task.dueDate && (
-              <span className={cn(overdue && 'font-medium text-destructive')}>
-                Due {formatDate(task.dueDate)}
-              </span>
-            )}
-            {assignee && ` · ${assignee}`}
-            {vendorName(task.vendorId) && ` · ${vendorName(task.vendorId)}`}
-          </p>
-        </div>
-        <div className="flex items-center gap-1">
-          <TaskStatusSelect weddingId={weddingId!} taskId={task.id} status={task.status} />
-          <Button
-            size="icon"
-            variant="ghost"
-            className="text-muted-foreground size-7 hover:text-destructive"
-            onClick={() => deleteTask.mutate(task.id)}
-            disabled={DEMO_MODE}
-            title={DEMO_MODE ? 'Read-only demo' : undefined}
-          >
-            <Trash2Icon className="size-3.5" />
-            <span className="sr-only">Delete {task.title}</span>
-          </Button>
-        </div>
-      </div>
+        weddingId={weddingId!}
+        task={task}
+        vendors={vendors ?? []}
+        assignee={task.assigneeLabel ?? memberName(task.assigneeMemberId)}
+        vendorName={vendorName(task.vendorId)}
+        onDelete={() => deleteTask.mutate(task.id)}
+      />
     );
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-12">
+    <div className="mx-auto w-full max-w-6xl px-6 py-12">
       <p className="text-sm font-medium uppercase tracking-widest text-foreground/70">
         {weddingData.wedding.name}
       </p>
@@ -120,13 +96,13 @@ export default function AwaitingTasksPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="mt-6 grid items-start gap-6 sm:grid-cols-2">
+        <div className="mt-6 space-y-6">
           {GROUP_ORDER.map((category) => {
             const group = tasks.filter((t) => t.category === category);
             if (group.length === 0) return null;
             // Completed tasks stay grouped under their own "Completed" label —
-            // just nested inside this category's card instead of pulled out
-            // into one page-wide list.
+            // just nested inside this category's section instead of pulled
+            // out into one page-wide list.
             const awaitingInGroup = group.filter((t) => t.status !== 'done');
             const completedInGroup = group.filter((t) => t.status === 'done');
             const groupKey = category ?? 'general';
@@ -136,15 +112,17 @@ export default function AwaitingTasksPage() {
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-semibold">{groupLabel(category)}</CardTitle>
                 </CardHeader>
-                <CardContent className="divide-y border-t p-0">
-                  {awaitingInGroup.map(renderTask)}
+                <CardContent>
+                  {awaitingInGroup.length > 0 && (
+                    <div className={CARD_GRID}>{awaitingInGroup.map(renderTaskCard)}</div>
+                  )}
                   {completedInGroup.length > 0 && (
-                    <>
+                    <div className={cn(awaitingInGroup.length > 0 && 'mt-5')}>
                       <button
                         type="button"
                         onClick={() => toggleCompleted(groupKey)}
                         aria-expanded={isExpanded}
-                        className="flex w-full items-center justify-between gap-2 bg-muted/40 px-5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
+                        className="flex w-full items-center justify-between gap-2 rounded-lg bg-muted/40 px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
                       >
                         <span>
                           Completed <span className="text-muted-foreground/70">({completedInGroup.length})</span>
@@ -153,8 +131,8 @@ export default function AwaitingTasksPage() {
                           className={cn('size-3.5 transition-transform', isExpanded && 'rotate-180')}
                         />
                       </button>
-                      {isExpanded && completedInGroup.map(renderTask)}
-                    </>
+                      {isExpanded && <div className={cn(CARD_GRID, 'mt-3')}>{completedInGroup.map(renderTaskCard)}</div>}
+                    </div>
                   )}
                 </CardContent>
               </Card>

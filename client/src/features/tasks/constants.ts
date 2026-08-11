@@ -3,7 +3,7 @@ import type { TaskStatus } from './api';
 export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   todo: 'To do',
   in_progress: 'In progress',
-  done: 'Done',
+  done: 'Complete',
 };
 
 // default = not started; warning = in motion; success = wrapped up. Same
@@ -12,6 +12,15 @@ export const TASK_STATUS_BADGE_VARIANT: Record<TaskStatus, 'default' | 'warning'
   todo: 'default',
   in_progress: 'warning',
   done: 'success',
+};
+
+// Solid icon-chip background per status — bolder and easier to scan at a
+// glance than the tinted Badge alone, used on the achievement-style task
+// cards (see TaskCard.tsx).
+export const TASK_STATUS_ICON_BG: Record<TaskStatus, string> = {
+  todo: 'bg-muted text-muted-foreground',
+  in_progress: 'bg-accent text-accent-foreground',
+  done: 'bg-primary text-primary-foreground',
 };
 
 export const TASK_STATUS_ORDER: TaskStatus[] = ['todo', 'in_progress', 'done'];

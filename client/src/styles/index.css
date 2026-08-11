@@ -382,6 +382,28 @@
   .glass-surface-lg:hover {
     box-shadow: var(--shadow-xl), var(--inset-highlight);
   }
+
+  /* Lightweight "premium mini card" surface for dense grids of small
+   * repeating items (task cards, etc.) — same gradient/shadow language as
+   * .glass-surface, but no backdrop-filter, since dozens of these can be
+   * on screen at once and repeated blur gets expensive fast. Lifts on
+   * hover instead of just brightening, for a bit of tactile response. */
+  .mini-card {
+    position: relative;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(165deg, var(--glass-fill-strong), var(--glass-fill));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-sm), var(--inset-highlight-soft);
+    transition:
+      box-shadow var(--t-base) var(--ease-standard),
+      transform var(--t-base) var(--ease-standard),
+      border-color var(--t-base) var(--ease-standard);
+  }
+  .mini-card:hover {
+    box-shadow: var(--shadow), var(--inset-highlight-soft);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
 }
 
 /*
