@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useVendors } from '@/features/vendors/hooks';
 import { useMembers, useWedding } from '@/features/weddings/hooks';
 import { DEMO_MODE } from '@/lib/demo';
@@ -120,43 +120,47 @@ export default function AwaitingTasksPage() {
           </CardContent>
         </Card>
       ) : (
-        GROUP_ORDER.map((category) => {
-          const group = tasks.filter((t) => t.category === category);
-          if (group.length === 0) return null;
-          // Completed tasks stay grouped under their own "Completed" label —
-          // just nested inside this category's section instead of pulled
-          // out into one page-wide list.
-          const awaitingInGroup = group.filter((t) => t.status !== 'done');
-          const completedInGroup = group.filter((t) => t.status === 'done');
-          const groupKey = category ?? 'general';
-          const isExpanded = expandedCompleted.has(groupKey);
-          return (
-            <div key={groupKey} className="mt-6 first:mt-4">
-              <h3 className="text-sm font-medium text-foreground/70">{groupLabel(category)}</h3>
-              <div className="mt-2 divide-y overflow-hidden rounded-xl border bg-card text-card-foreground">
-                {awaitingInGroup.map(renderTask)}
-                {completedInGroup.length > 0 && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => toggleCompleted(groupKey)}
-                      aria-expanded={isExpanded}
-                      className="flex w-full items-center justify-between gap-2 bg-muted/40 px-5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
-                    >
-                      <span>
-                        Completed <span className="text-muted-foreground/70">({completedInGroup.length})</span>
-                      </span>
-                      <ChevronDownIcon
-                        className={cn('size-3.5 transition-transform', isExpanded && 'rotate-180')}
-                      />
-                    </button>
-                    {isExpanded && completedInGroup.map(renderTask)}
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })
+        <div className="mt-4 grid items-start gap-4 sm:grid-cols-2">
+          {GROUP_ORDER.map((category) => {
+            const group = tasks.filter((t) => t.category === category);
+            if (group.length === 0) return null;
+            // Completed tasks stay grouped under their own "Completed" label —
+            // just nested inside this category's card instead of pulled out
+            // into one page-wide list.
+            const awaitingInGroup = group.filter((t) => t.status !== 'done');
+            const completedInGroup = group.filter((t) => t.status === 'done');
+            const groupKey = category ?? 'general';
+            const isExpanded = expandedCompleted.has(groupKey);
+            return (
+              <Card key={groupKey}>
+                <CardHeader>
+                  <CardTitle className="text-base font-medium">{groupLabel(category)}</CardTitle>
+                </CardHeader>
+                <CardContent className="divide-y border-t p-0">
+                  {awaitingInGroup.map(renderTask)}
+                  {completedInGroup.length > 0 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => toggleCompleted(groupKey)}
+                        aria-expanded={isExpanded}
+                        className="flex w-full items-center justify-between gap-2 bg-muted/40 px-5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
+                      >
+                        <span>
+                          Completed <span className="text-muted-foreground/70">({completedInGroup.length})</span>
+                        </span>
+                        <ChevronDownIcon
+                          className={cn('size-3.5 transition-transform', isExpanded && 'rotate-180')}
+                        />
+                      </button>
+                      {isExpanded && completedInGroup.map(renderTask)}
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       )}
     </div>
   );
