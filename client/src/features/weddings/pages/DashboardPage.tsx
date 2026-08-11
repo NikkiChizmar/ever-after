@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import {
   Card,
@@ -7,6 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { CategorySpendChart } from '@/features/budget/components/CategorySpendChart';
+import { useBudgetSummary } from '@/features/budget/hooks';
+import { useVendorPaymentSummary, useVendors } from '@/features/vendors/hooks';
 import { formatMoney } from '@/lib/format';
 import { useWedding } from '../hooks';
 
@@ -28,6 +31,9 @@ const upcomingModules = [
 export default function DashboardPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
   const { data, isPending, isError, error } = useWedding(weddingId!);
+  const { data: summary } = useBudgetSummary(weddingId!);
+  const { data: vendors } = useVendors(weddingId!);
+  const { data: paymentSummary } = useVendorPaymentSummary(weddingId!);
 
   if (isPending) {
     return <p className="px-6 py-20 text-center text-sm text-foreground/70">Loading…</p>;
@@ -42,6 +48,39 @@ export default function DashboardPage() {
 
   const { wedding, role } = data;
   const countdown = daysUntil(wedding.weddingDate);
+  const currency = wedding.currency;
+  const money = (amount: string) => formatMoney(amount, currency);
+
+  const remainingToPay = summary
+    ? Number(summary.totals.committedAmount) - Number(summary.totals.paidAmount)
+    : 0;
+
+  // What Nikki & Cody are personally covering, as opposed to the wedding
+  // budget as a whole — currently just these two categories; say the word
+  // and more can be added here.
+  const OUR_CATEGORIES = ['Videography', 'Live music'];
+  const ourCategories = summary?.categories.filter((c) => OUR_CATEGORIES.includes(c.name)) ?? [];
+  const ourCategoryIds = new Set(ourCategories.map((c) => c.id));
+
+  // Break the total down per vendor, not just per category — a category can
+  // hold several vendors under consideration, but only the ones with a real
+  // contract (i.e. an entry in paymentSummary) actually owe anything.
+  const ourVendorBalances = (vendors ?? [])
+    .filter((v) => v.budgetCategoryId && ourCategoryIds.has(v.budgetCategoryId))
+    .map((v) => {
+      const payment = paymentSummary?.find((p) => p.vendorId === v.id);
+      if (!payment) return null;
+      const committed = Number(payment.committedAmount);
+      const paid = Number(payment.paidAmount);
+      return {
+        vendorName: v.name,
+        categoryName: summary?.categories.find((c) => c.id === v.budgetCategoryId)?.name ?? '',
+        remaining: Math.max(committed - paid, 0),
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => row !== null);
+
+  const ourRemaining = ourVendorBalances.reduce((sum, row) => sum + row.remaining, 0);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-12">
@@ -85,19 +124,87 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {summary && (
+        <>
+          <h2 className="font-display mt-14 text-lg font-medium">Budget</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-4">
+            <Card>
+              <CardHeader>
+                <CardDescription>Planned</CardDescription>
+                <CardTitle className="font-display text-xl font-medium">
+                  {money(summary.totals.plannedAmount)}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardDescription>Committed</CardDescription>
+                <CardTitle className="font-display text-xl font-medium">
+                  {money(summary.totals.committedAmount)}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardDescription>Paid</CardDescription>
+                <CardTitle className="font-display text-xl font-medium">
+                  {money(summary.totals.paidAmount)}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardDescription>Remaining to pay</CardDescription>
+                <CardTitle className="font-display text-xl font-medium">
+                  {formatMoney(String(remainingToPay), currency)}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
+
+          {ourVendorBalances.length > 0 && (
+            <Card className="mt-4 border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardDescription>
+                  What Nikki & Cody are covering ({ourCategories.map((c) => c.name).join(' + ')})
+                </CardDescription>
+                <CardTitle className="font-display text-2xl font-medium">
+                  {formatMoney(String(ourRemaining), currency)} left to pay
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 pt-0">
+                {ourVendorBalances.map((row) => (
+                  <div key={row.vendorName} className="flex items-center justify-between text-sm">
+                    <span className="text-card-foreground">
+                      {row.vendorName} <span className="text-muted-foreground">({row.categoryName})</span>
+                    </span>
+                    <span className="font-medium text-card-foreground">
+                      {formatMoney(String(row.remaining), currency)}
+                    </span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
+          {summary.categories.length > 0 && (
+            <div className="mt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base font-medium">Spend by category</CardTitle>
+                  <CardDescription>Committed amounts, from real contracts.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CategorySpendChart summary={summary} currency={currency} />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </>
+      )}
+
       <h2 className="font-display mt-14 text-lg font-medium">Modules</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <Link to={`/w/${wedding.id}/budget`}>
-          <Card className="h-full transition-colors hover:border-primary/40">
-            <CardHeader>
-              <CardTitle className="text-base font-medium">Budget Center</CardTitle>
-              <CardDescription>Planned vs. committed vs. paid, by category.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs uppercase tracking-widest text-primary">Open →</p>
-            </CardContent>
-          </Card>
-        </Link>
         {upcomingModules.map((module) => (
           <Card key={module.title} className="border-dashed">
             <CardHeader>

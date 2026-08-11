@@ -36,7 +36,6 @@ export function AppShell({ children }: { children: ReactNode }) {
               <TabNav
                 tabs={[
                   { to: `/w/${weddingId}`, label: 'Dashboard' },
-                  { to: `/w/${weddingId}/budget`, label: 'Budget' },
                   { to: `/w/${weddingId}/vendors`, label: 'Vendors' },
                   { to: `/w/${weddingId}/tasks`, label: 'Awaiting Tasks' },
                 ]}

@@ -1,13 +1,17 @@
-import { PlusIcon } from 'lucide-react';
+import { PencilIcon, PlusIcon } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AddCategoryDialog } from '@/features/budget/components/AddCategoryDialog';
+import { BudgetProgress } from '@/features/budget/components/BudgetProgress';
+import { EditCategoryDialog } from '@/features/budget/components/EditCategoryDialog';
 import { VendorPaymentTimeline } from '@/features/budget/components/VendorPaymentTimeline';
 import { VendorPipelineChart } from '@/features/budget/components/VendorPipelineChart';
 import { useBudgetSummary } from '@/features/budget/hooks';
 import { useWedding } from '@/features/weddings/hooks';
 import { DEMO_MODE } from '@/lib/demo';
+import { formatMoney } from '@/lib/format';
 import { AddVendorDialog } from '../components/AddVendorDialog';
 import { usePaymentsTimeline, useVendorPaymentSummary, useVendors } from '../hooks';
 
@@ -52,6 +56,9 @@ export default function VendorsPage() {
   }
 
   const currency = weddingData.wedding.currency;
+  const money = (amount: string) => formatMoney(amount, currency);
+  const showUncategorized =
+    Number(summary.uncategorized.committedAmount) > 0 || Number(summary.uncategorized.paidAmount) > 0;
 
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-12">
@@ -108,6 +115,83 @@ export default function VendorsPage() {
               />
             </CardContent>
           </Card>
+        </div>
+      )}
+
+      <div className="mt-14 flex items-center justify-between">
+        <h2 className="font-display text-lg font-medium">Budget categories</h2>
+        <AddCategoryDialog
+          weddingId={weddingId!}
+          trigger={
+            <Button size="sm" variant="outline" disabled={DEMO_MODE} title={DEMO_MODE ? 'Read-only demo' : undefined}>
+              <PlusIcon /> Add category
+            </Button>
+          }
+        />
+      </div>
+
+      {summary.categories.length === 0 && !showUncategorized ? (
+        <Card className="mt-4 border-dashed">
+          <CardContent className="py-10 text-center text-sm text-muted-foreground">
+            No categories yet. Start with the big ones — venue, catering, photography.
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          {summary.categories.map((category) => (
+            <Card key={category.id}>
+              <CardHeader className="flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-base font-medium">{category.name}</CardTitle>
+                <EditCategoryDialog
+                  weddingId={weddingId!}
+                  category={category}
+                  trigger={
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="size-7 -mt-1 -mr-1"
+                      disabled={DEMO_MODE}
+                      title={DEMO_MODE ? 'Read-only demo' : undefined}
+                    >
+                      <PencilIcon className="size-3.5" />
+                      <span className="sr-only">Edit {category.name}</span>
+                    </Button>
+                  }
+                />
+              </CardHeader>
+              <CardContent>
+                <BudgetProgress
+                  planned={Number(category.plannedAmount)}
+                  committed={Number(category.committedAmount)}
+                  paid={Number(category.paidAmount)}
+                  currency={currency}
+                />
+                <div className="mt-3 flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{money(category.paidAmount)} paid</span>
+                  <span className="font-medium text-card-foreground">
+                    Total {money(category.committedAmount)}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {showUncategorized && (
+            <Card className="border-dashed">
+              <CardHeader>
+                <CardTitle className="text-base font-medium text-muted-foreground">
+                  Uncategorized
+                </CardTitle>
+                <CardDescription>Vendors not yet assigned to a category.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>{money(summary.uncategorized.committedAmount)} committed</span>
+                  <span>{money(summary.uncategorized.paidAmount)} paid</span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
     </div>

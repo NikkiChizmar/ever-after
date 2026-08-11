@@ -5,7 +5,6 @@ import { DemoBanner } from '@/components/layout/DemoBanner';
 import { RequireAuth } from '@/features/auth/components/RequireAuth';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import RegisterPage from '@/features/auth/pages/RegisterPage';
-import BudgetCenterPage from '@/features/budget/pages/BudgetCenterPage';
 import AwaitingTasksPage from '@/features/tasks/pages/AwaitingTasksPage';
 import VendorsPage from '@/features/vendors/pages/VendorsPage';
 import { HomeRedirect } from '@/features/weddings/components/HomeRedirect';
@@ -35,7 +34,10 @@ export default function App() {
           <Route path="/" element={<HomeRedirect />} />
           <Route path="/welcome" element={<WelcomePage />} />
           <Route path="/w/:weddingId" element={<DashboardPage />} />
-          <Route path="/w/:weddingId/budget" element={<BudgetCenterPage />} />
+          {/* Budget Center folded into Dashboard (stats/chart) and Vendors
+           * (category management) — redirect old links instead of a dead
+           * end. */}
+          <Route path="/w/:weddingId/budget" element={<Navigate to=".." replace />} />
           <Route path="/w/:weddingId/vendors" element={<VendorsPage />} />
           <Route path="/w/:weddingId/tasks" element={<AwaitingTasksPage />} />
         </Route>

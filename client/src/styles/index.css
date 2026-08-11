@@ -140,8 +140,8 @@
  * Practical effect: text must live on a card to use --muted-foreground
  * (tuned for the light card surface); anything rendered directly against
  * --background uses --foreground at reduced opacity instead (see AppShell,
- * DashboardPage, BudgetCenterPage, WelcomePage, and the various loading
- * states for the text-foreground/70 pattern).
+ * DashboardPage, WelcomePage, and the various loading states for the
+ * text-foreground/70 pattern).
  */
 .dark {
   --background: oklch(0.5 0.085 120);
