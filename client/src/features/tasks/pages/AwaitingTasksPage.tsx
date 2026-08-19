@@ -1,5 +1,5 @@
 import { ChevronDownIcon, PlusIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -90,31 +90,51 @@ function AddTaskTile({
   );
 }
 
-// Two-state sliding toggle between the task list and the shopping list —
-// same sliding-pill idea as the top nav's TabNav, just simpler since there
-// are always exactly two, equally-sized options.
+// Two-state sliding toggle between the task list and the shopping list.
+// Same technique as the top nav's TabNav sliding pill — measure the active
+// button's real box and animate left/width to it — rather than guessing a
+// 50/50 split with a CSS transform, which never quite lined up.
 function ViewToggle({ value, onChange }: { value: View; onChange: (next: View) => void }) {
   const options: { value: View; label: string }[] = [
     { value: 'tasks', label: 'Tasks' },
     { value: 'shopping', label: 'To purchase' },
   ];
   const activeIndex = options.findIndex((option) => option.value === value);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [indicator, setIndicator] = useState<{ left: number; width: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = buttonRefs.current[activeIndex];
+      if (el) {
+        setIndicator({ left: el.offsetLeft, width: el.offsetWidth });
+      }
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [activeIndex]);
 
   return (
     <div className="relative inline-flex items-center rounded-full border border-border/60 bg-muted/40 p-0.5 text-sm">
-      <span
-        aria-hidden="true"
-        className="absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-card shadow-sm transition-transform duration-300 ease-out"
-        style={{ transform: `translateX(${activeIndex * 100}%)` }}
-      />
-      {options.map((option) => (
+      {indicator && (
+        <span
+          aria-hidden="true"
+          className="absolute inset-y-0.5 rounded-full bg-card shadow-sm transition-[left,width] duration-300 ease-out"
+          style={{ left: indicator.left, width: indicator.width }}
+        />
+      )}
+      {options.map((option, index) => (
         <button
           key={option.value}
           type="button"
+          ref={(el) => {
+            buttonRefs.current[index] = el;
+          }}
           onClick={() => onChange(option.value)}
           aria-pressed={value === option.value}
           className={cn(
-            'relative z-10 flex-1 rounded-full px-4 py-1.5 font-medium whitespace-nowrap transition-colors',
+            'relative z-10 rounded-full px-4 py-1.5 font-medium whitespace-nowrap transition-colors',
             value === option.value ? 'text-card-foreground' : 'text-muted-foreground hover:text-foreground',
           )}
         >
