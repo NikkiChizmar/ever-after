@@ -329,7 +329,31 @@ not schema.
 
 **MVP:** yes.
 
-### 2.15 documents
+### 2.15 shopping_items
+
+**Represents:** something to buy, not something to do — table runners,
+favors, a guest book. Deliberately separate from `tasks`: quantity, store,
+and estimated cost are shopping-specific fields that don't belong on a
+generic task, and mixing "buy X" in with "confirm headcount with caterer"
+made the task list noisy. Shown as a second view on the same page as Tasks,
+toggled between rather than a whole new nav tab.
+
+**Key fields:** `wedding_id`, `name`, `quantity` (integer, default 1),
+`estimated_cost` (nullable numeric), `store` (nullable text — "Amazon",
+"Michaels," "Etsy"), `purchased` (boolean, default false).
+
+**Decisions & edge cases:** no category/section grouping like tasks have —
+shopping lists are naturally flatter, and it can be added later if the list
+grows large enough to need it. `purchased` is a plain boolean rather than
+tasks' three-state status, since "bought or not" is genuinely binary in a
+way "to do" isn't. Not linked to `vendors` or `budget_categories` — an
+estimated cost here is a rough personal-shopping figure, not a contract, and
+mixing it into the committed/paid vendor math would conflate two different
+kinds of spending.
+
+**MVP:** yes.
+
+### 2.16 documents
 
 **Represents:** *metadata about* a file — contract PDFs, invoices, inspiration
 images. Never the file itself.

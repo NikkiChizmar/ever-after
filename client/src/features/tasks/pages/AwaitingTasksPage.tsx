@@ -4,6 +4,9 @@ import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AddItemDialog } from '@/features/shopping/components/AddItemDialog';
+import { ShoppingItemCard } from '@/features/shopping/components/ShoppingItemCard';
+import { useDeleteShoppingItem, useShoppingItems } from '@/features/shopping/hooks';
 import { useVendors } from '@/features/vendors/hooks';
 import { useMembers, useWedding } from '@/features/weddings/hooks';
 import { DEMO_MODE } from '@/lib/demo';
@@ -13,7 +16,10 @@ import { TaskCard } from '../components/TaskCard';
 import { TASK_CATEGORIES } from '../constants';
 import { useDeleteTask, useTasks } from '../hooks';
 import type { Task } from '../api';
+import type { ShoppingItem } from '@/features/shopping/api';
 import type { Vendor } from '@/features/vendors/api';
+
+type View = 'tasks' | 'shopping';
 
 // null (no category picked) groups first as "General" — the everyday
 // planning tasks ("Mail invitations") that aren't tied to a specific
@@ -84,6 +90,61 @@ function AddTaskTile({
   );
 }
 
+// Two-state sliding toggle between the task list and the shopping list —
+// same sliding-pill idea as the top nav's TabNav, just simpler since there
+// are always exactly two, equally-sized options.
+function ViewToggle({ value, onChange }: { value: View; onChange: (next: View) => void }) {
+  const options: { value: View; label: string }[] = [
+    { value: 'tasks', label: 'Tasks' },
+    { value: 'shopping', label: 'To purchase' },
+  ];
+  const activeIndex = options.findIndex((option) => option.value === value);
+
+  return (
+    <div className="relative inline-flex items-center rounded-full border border-border/60 bg-muted/40 p-0.5 text-sm">
+      <span
+        aria-hidden="true"
+        className="absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-card shadow-sm transition-transform duration-300 ease-out"
+        style={{ transform: `translateX(${activeIndex * 100}%)` }}
+      />
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          onClick={() => onChange(option.value)}
+          aria-pressed={value === option.value}
+          className={cn(
+            'relative z-10 flex-1 rounded-full px-4 py-1.5 font-medium whitespace-nowrap transition-colors',
+            value === option.value ? 'text-card-foreground' : 'text-muted-foreground hover:text-foreground',
+          )}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Same dashed trailing tile as AddTaskTile, for the shopping grid.
+function AddItemTile({ weddingId }: { weddingId: string }) {
+  return (
+    <AddItemDialog
+      weddingId={weddingId}
+      trigger={
+        <button
+          type="button"
+          disabled={DEMO_MODE}
+          title={DEMO_MODE ? 'Read-only demo' : 'Add item'}
+          className="flex h-full min-h-[104px] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-border/60 text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <PlusIcon className="size-4" />
+          <span className="text-xs font-medium">Add item</span>
+        </button>
+      }
+    />
+  );
+}
+
 export default function AwaitingTasksPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
   const { data: weddingData } = useWedding(weddingId!);
@@ -91,6 +152,13 @@ export default function AwaitingTasksPage() {
   const { data: vendors } = useVendors(weddingId!);
   const { data: members } = useMembers(weddingId!);
   const deleteTask = useDeleteTask(weddingId!);
+  const { data: shoppingItems, isPending: isShoppingPending, isError: isShoppingError, error: shoppingError } =
+    useShoppingItems(weddingId!);
+  const deleteItem = useDeleteShoppingItem(weddingId!);
+  const [view, setView] = useState<View>('tasks');
+  // Collapsed by default — purchased items are still there to review, just
+  // not eating up space until asked for.
+  const [showPurchased, setShowPurchased] = useState(false);
   // Collapsed by default in every category — completed tasks are still
   // there to review, just not eating up space until asked for.
   const [expandedCompleted, setExpandedCompleted] = useState<Set<string>>(new Set());
@@ -115,6 +183,7 @@ export default function AwaitingTasksPage() {
 
   const vendorName = (vendorId: string | null) => vendors?.find((v) => v.id === vendorId)?.name;
   const memberName = (memberId: string | null) => members?.find((m) => m.id === memberId)?.fullName;
+  const currency = weddingData.wedding.currency;
 
   function renderTaskCard(task: Task) {
     return (
@@ -130,6 +199,21 @@ export default function AwaitingTasksPage() {
     );
   }
 
+  function renderItemCard(item: ShoppingItem) {
+    return (
+      <ShoppingItemCard
+        key={item.id}
+        weddingId={weddingId!}
+        item={item}
+        currency={currency}
+        onDelete={() => deleteItem.mutate(item.id)}
+      />
+    );
+  }
+
+  const itemsToBuy = (shoppingItems ?? []).filter((item) => !item.purchased);
+  const purchasedItems = (shoppingItems ?? []).filter((item) => item.purchased);
+
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-12">
       <p className="text-sm font-medium uppercase tracking-widest text-foreground/70">
@@ -138,16 +222,74 @@ export default function AwaitingTasksPage() {
       <h1 className="font-display mt-2 text-4xl font-medium tracking-tight">Awaiting Tasks</h1>
       <p className="mt-2 text-foreground/70">Everything still on the list, in one place.</p>
 
-      <div className="mt-10 flex items-center justify-between">
-        <h2 className="font-display text-lg font-medium">Tasks</h2>
-        <AddTaskDialog weddingId={weddingId!} vendors={vendors ?? []} trigger={
-          <Button size="sm" variant="outline" disabled={DEMO_MODE} title={DEMO_MODE ? 'Read-only demo' : undefined}>
-            <PlusIcon /> Add task
-          </Button>
-        } />
+      <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <h2 className="font-display text-lg font-medium">
+            {view === 'tasks' ? 'Tasks' : 'To purchase'}
+          </h2>
+          <ViewToggle value={view} onChange={setView} />
+        </div>
+        {view === 'tasks' ? (
+          <AddTaskDialog weddingId={weddingId!} vendors={vendors ?? []} trigger={
+            <Button size="sm" variant="outline" disabled={DEMO_MODE} title={DEMO_MODE ? 'Read-only demo' : undefined}>
+              <PlusIcon /> Add task
+            </Button>
+          } />
+        ) : (
+          <AddItemDialog weddingId={weddingId!} trigger={
+            <Button size="sm" variant="outline" disabled={DEMO_MODE} title={DEMO_MODE ? 'Read-only demo' : undefined}>
+              <PlusIcon /> Add item
+            </Button>
+          } />
+        )}
       </div>
 
-      {tasks.length === 0 ? (
+      {view === 'shopping' ? (
+        isShoppingPending ? (
+          <p className="mt-10 text-center text-sm text-foreground/70">Loading…</p>
+        ) : isShoppingError ? (
+          <p role="alert" className="mt-10 text-center text-sm text-destructive">
+            {shoppingError.message}
+          </p>
+        ) : (shoppingItems ?? []).length === 0 ? (
+          <Card className="mt-4 border-dashed">
+            <CardContent className="py-10 text-center text-sm text-muted-foreground">
+              Nothing on the list yet — add anything you still need to buy.
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="mt-6">
+            <Card className="glass-surface-lg rounded-2xl">
+              <CardContent className="pt-6">
+                <div className={cn(CARD_GRID, purchasedItems.length > 0 && 'mb-5')}>
+                  {itemsToBuy.map(renderItemCard)}
+                  <AddItemTile weddingId={weddingId!} />
+                </div>
+                {purchasedItems.length > 0 && (
+                  <div className={cn(itemsToBuy.length > 0 && 'mt-5')}>
+                    <button
+                      type="button"
+                      onClick={() => setShowPurchased((prev) => !prev)}
+                      aria-expanded={showPurchased}
+                      className="flex w-full items-center justify-between gap-2 rounded-lg bg-muted/40 px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60"
+                    >
+                      <span>
+                        Purchased <span className="text-muted-foreground/70">({purchasedItems.length})</span>
+                      </span>
+                      <ChevronDownIcon
+                        className={cn('size-3.5 transition-transform', showPurchased && 'rotate-180')}
+                      />
+                    </button>
+                    {showPurchased && (
+                      <div className={cn(CARD_GRID, 'mt-3')}>{purchasedItems.map(renderItemCard)}</div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )
+      ) : tasks.length === 0 ? (
         <Card className="mt-4 border-dashed">
           <CardContent className="py-10 text-center text-sm text-muted-foreground">
             No tasks yet — add one whenever something needs doing.

@@ -4,6 +4,7 @@ import {
   DEMO_MEMBERS,
   DEMO_PAYMENTS_TIMELINE,
   DEMO_ROLE,
+  DEMO_SHOPPING_ITEMS,
   DEMO_TASKS,
   DEMO_USER,
   DEMO_VENDOR_PAYMENTS,
@@ -61,6 +62,9 @@ export function mockApi<T>(path: string, options: RequestOptions = {}): T {
     }
     if (segments[0] === 'weddings' && segments[2] === 'tasks') {
       return { tasks: DEMO_TASKS } as T;
+    }
+    if (segments[0] === 'weddings' && segments[2] === 'shopping-items') {
+      return { items: DEMO_SHOPPING_ITEMS } as T;
     }
     // A GET we don't recognize — treat like a real backend would for an
     // unmatched route, rather than silently returning nothing.

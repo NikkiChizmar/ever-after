@@ -15,6 +15,7 @@ import { eventRouter } from './event.route.js';
 import { guestRouter } from './guest.route.js';
 import { invitationRouter } from './invitation.route.js';
 import { partyRouter } from './party.route.js';
+import { shoppingItemRouter } from './shopping-item.route.js';
 import { taskRouter } from './task.route.js';
 import { vendorRouter } from './vendor.route.js';
 
@@ -45,3 +46,7 @@ weddingRouter.use('/:weddingId', invitationRouter);
 // Tasks — independent of money and guests; references vendors/members
 // optionally, so mounted after both are already registered.
 weddingRouter.use('/:weddingId', taskRouter);
+
+// Shopping list — items to buy, not things to do; fully independent of
+// every other domain (no FKs out to vendors/budget/tasks).
+weddingRouter.use('/:weddingId', shoppingItemRouter);

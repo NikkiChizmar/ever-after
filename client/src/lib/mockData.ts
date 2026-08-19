@@ -1,5 +1,6 @@
 import type { AuthUser } from '@/features/auth/api';
 import type { BudgetSummary } from '@/features/budget/api';
+import type { ShoppingItem } from '@/features/shopping/api';
 import type { Task } from '@/features/tasks/api';
 import type { PaymentTimelineEntry, Vendor, VendorPaymentSummary } from '@/features/vendors/api';
 import type { Member, Wedding, WeddingRole } from '@/features/weddings/api';
@@ -636,5 +637,48 @@ export const DEMO_TASKS: Task[] = [
     category: 'Cocktail hour',
     section: null,
     createdAt: '2026-03-24T00:00:00.000Z',
+  },
+];
+
+export const DEMO_SHOPPING_ITEMS: ShoppingItem[] = [
+  {
+    id: 'item-table-runners',
+    weddingId: DEMO_WEDDING_ID,
+    name: 'Table runners',
+    quantity: 12,
+    estimatedCost: '90',
+    store: 'Etsy',
+    purchased: false,
+    createdAt: '2026-03-02T00:00:00.000Z',
+  },
+  {
+    id: 'item-champagne-flutes',
+    weddingId: DEMO_WEDDING_ID,
+    name: 'Champagne flutes',
+    quantity: 60,
+    estimatedCost: '145',
+    store: 'Amazon',
+    purchased: true,
+    createdAt: '2026-01-20T00:00:00.000Z',
+  },
+  {
+    id: 'item-guest-book',
+    weddingId: DEMO_WEDDING_ID,
+    name: 'Guest book and pen',
+    quantity: 1,
+    estimatedCost: '38',
+    store: 'Michaels',
+    purchased: false,
+    createdAt: '2026-03-13T00:00:00.000Z',
+  },
+  {
+    id: 'item-welcome-sign',
+    weddingId: DEMO_WEDDING_ID,
+    name: 'Welcome sign easel',
+    quantity: 1,
+    estimatedCost: null,
+    store: null,
+    purchased: false,
+    createdAt: '2026-03-15T00:00:00.000Z',
   },
 ];
